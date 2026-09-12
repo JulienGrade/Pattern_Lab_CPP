@@ -1,0 +1,93 @@
+window.CPP_LESSONS = [
+    {
+        "id": "bases-classe-objet",
+        "name": "Classe et objet",
+        "family": "bases",
+        "summary": "La classe décrit. L’objet existe avec ses propres valeurs.",
+        "situation": "Deux instances, deux valeurs",
+        "reading": "Le constructeur initialise nom_ pour chaque objet. lea et karim partagent le même type, mais chacun possède sa propre chaîne.",
+        "limit": "Lea et Karim sont construits directement par valeur. Ils sont détruits automatiquement à la fin de main.",
+        "code": "#include <iostream>\n#include <string>\n#include <utility>\n\nclass Collaborateur {\npublic:\n    explicit Collaborateur(std::string nom) : nom_(std::move(nom)) {}\n    const std::string& nom() const { return nom_; }\n\nprivate:\n    std::string nom_;\n};\n\nint main() {\n    Collaborateur lea{\"Lea\"};\n    Collaborateur karim{\"Karim\"};\n    std::cout << lea.nom() << ' ' << karim.nom() << '\\n';\n}\n",
+        "output": "Lea Karim\n",
+        "when": "",
+        "compare": ""
+    },
+    {
+        "id": "bases-membres",
+        "name": "Attributs et opérations",
+        "family": "bases",
+        "summary": "Un attribut conserve l’état. Une méthode consulte ou transforme cet état.",
+        "situation": "L’état change par une opération",
+        "reading": "incrementer() modifie valeur_. valeur() est une consultation const qui renvoie l’entier courant.",
+        "limit": "Un entier privé empêche l’appelant de modifier directement la représentation.",
+        "code": "#include <iostream>\n\nclass Compteur {\npublic:\n    void incrementer() { ++valeur_; }\n    int valeur() const { return valeur_; }\n\nprivate:\n    int valeur_ = 0;\n};\n\nint main() {\n    Compteur compteur;\n    compteur.incrementer();\n    std::cout << compteur.valeur() << '\\n';\n}\n",
+        "output": "1\n",
+        "when": "",
+        "compare": ""
+    },
+    {
+        "id": "bases-visibilite",
+        "name": "Visibilité et encapsulation",
+        "family": "bases",
+        "summary": "Protéger les données et montrer les services accessibles.",
+        "situation": "Le stock reste valide",
+        "reading": "retirer() vérifie la quantité demandée avant de modifier l’état. Retirer huit unités est refusé lorsque cinq sont disponibles.",
+        "limit": "La création d’un setter général exposerait des modifications qui contournent la règle.",
+        "code": "#include <iostream>\n\nclass Stock {\npublic:\n    bool retirer(int quantite) {\n        if (quantite <= 0 || quantite > quantite_) return false;\n        quantite_ -= quantite;\n        return true;\n    }\n\n    int quantite() const { return quantite_; }\n\nprivate:\n    int quantite_ = 5;\n};\n\nint main() {\n    Stock stock;\n    std::cout << std::boolalpha << stock.retirer(8) << ' ' << stock.quantite() << '\\n';\n}\n",
+        "output": "false 5\n",
+        "when": "",
+        "compare": ""
+    },
+    {
+        "id": "bases-abstraction",
+        "name": "Interface et classe abstraite",
+        "family": "bases",
+        "summary": "Un contrat commun permet à plusieurs classes de collaborer sans connaître leurs détails.",
+        "situation": "Un contrat commun, un type concret",
+        "reading": "Notification déclare une méthode virtuelle pure. Mail la redéfinit. L’appel par référence à Notification sélectionne le comportement de Mail.",
+        "limit": "Le destructeur virtuel permet aussi de détruire correctement un dérivé possédé via la base.",
+        "code": "#include <iostream>\n#include <string>\n\nstruct Notification {\n    virtual ~Notification() = default;\n    virtual std::string envoyer() const = 0;\n};\n\nstruct Mail final : Notification {\n    std::string envoyer() const override { return \"Mail envoye\"; }\n};\n\nint main() {\n    Mail mail;\n    const Notification& notification = mail;\n    std::cout << notification.envoyer() << '\\n';\n}\n",
+        "output": "Mail envoye\n",
+        "when": "",
+        "compare": ""
+    },
+    {
+        "id": "bases-relations",
+        "name": "Les relations entre classes",
+        "family": "bases",
+        "summary": "Un membre par valeur possède une donnée. Une référence permet de collaborer avec un objet existant.",
+        "situation": "Posséder une ligne, observer un client",
+        "reading": "Commande contient ses lignes par valeur et reçoit son client par référence constante. Les lignes sont une composition et le client une association.",
+        "limit": "Le client doit vivre pendant toute l’utilisation de la commande. La commande ne prolonge pas sa durée de vie.",
+        "code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Client {\n    std::string nom;\n};\n\nstruct Ligne {\n    int prix;\n};\n\nclass Commande {\npublic:\n    explicit Commande(const Client& client) : client_(client) {}\n    void ajouter(int prix) { lignes_.push_back(Ligne{prix}); }\n    void afficher() const {\n        std::cout << client_.nom << \" : \" << lignes_.size() << \" ligne\\n\";\n    }\n\nprivate:\n    const Client& client_;\n    std::vector<Ligne> lignes_;\n};\n\nint main() {\n    Client client{\"Lea\"};\n    Commande commande{client};\n    commande.ajouter(10);\n    commande.afficher();\n}\n",
+        "output": "Lea : 1 ligne\n",
+        "when": "",
+        "compare": ""
+    },
+    {
+        "id": "bases-multiplicites",
+        "name": "Relations optionnelles et collections",
+        "family": "bases",
+        "summary": "optional exprime une présence facultative et vector une collection d’éléments.",
+        "situation": "Une cardinalité devient un type",
+        "reading": "optional<Badge> exprime zéro ou un badge. vector<string> exprime plusieurs membres, éventuellement aucun.",
+        "limit": "vector ne garantit aucune borne minimale. Une règle « au moins un membre » demanderait une validation.",
+        "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <optional>\n\nstruct Badge {\n    int numero;\n};\n\nstruct Equipe {\n    std::optional<Badge> badge;\n    std::vector<std::string> membres;\n};\n\nint main() {\n    Equipe equipe{std::nullopt, {\"Lea\", \"Karim\"}};\n    std::cout << equipe.badge.has_value() << ' ' << equipe.membres.size() << '\\n';\n}\n",
+        "output": "0 2\n",
+        "when": "",
+        "compare": ""
+    },
+    {
+        "id": "bases-lire-pattern",
+        "name": "Lire les rôles d’un pattern en C++",
+        "family": "bases",
+        "summary": "Les types, les méthodes virtuelles et les membres indiquent qui collabore avec qui.",
+        "situation": "Repérer le rôle de chaque objet",
+        "reading": "Service utilise Politique par référence. Double fournit l’algorithme concret. executer() délègue le calcul sans connaître sa formule.",
+        "limit": "La politique est créée avant le service. La référence reste valide pendant l’exécution.",
+        "code": "#include <iostream>\n\nstruct Politique {\n    virtual ~Politique() = default;\n    virtual int calculer(int montant) const = 0;\n};\n\nstruct Double final : Politique {\n    int calculer(int montant) const override { return montant * 2; }\n};\n\nclass Service {\npublic:\n    explicit Service(const Politique& politique) : politique_(politique) {}\n    int executer(int montant) const { return politique_.calculer(montant); }\n\nprivate:\n    const Politique& politique_;\n};\n\nint main() {\n    Double politique;\n    Service service{politique};\n    std::cout << service.executer(5) << '\\n';\n}\n",
+        "output": "10\n",
+        "when": "",
+        "compare": ""
+    }
+];
