@@ -89,5 +89,44 @@ window.CPP_LESSONS = [
         "output": "10\n",
         "when": "",
         "compare": ""
+    },
+    {
+        "id": "factory-method",
+        "name": "Factory Method",
+        "family": "creation",
+        "summary": "Confier le choix du produit à une sous-classe, tout en conservant le traitement commun.",
+        "situation": "Le rapport laisse une sous-classe créer le produit",
+        "reading": "Rapport::generer() décrit le traitement commun. Son appel virtuel à creerExport() construit le produit choisi par RapportCsv. Le client reçoit le résultat texte.",
+        "limit": "unique_ptr libère le produit temporaire après son utilisation. Le créateur doit varier pour justifier cette hiérarchie.",
+        "code": "#include <iostream>\n#include <string>\n#include <memory>\n\nstruct Export {\n    virtual ~Export() = default;\n    virtual std::string texte() const = 0;\n};\n\nstruct Csv final : Export {\n    std::string texte() const override { return \"Export CSV\"; }\n};\n\nclass Rapport {\npublic:\n    virtual ~Rapport() = default;\n    std::string generer() const { return creerExport()->texte(); }\n\nprotected:\n    virtual std::unique_ptr<Export> creerExport() const = 0;\n};\n\nclass RapportCsv final : public Rapport {\n    std::unique_ptr<Export> creerExport() const override {\n        return std::make_unique<Csv>();\n    }\n};\n\nint main() {\n    RapportCsv rapport;\n    std::cout << rapport.generer() << '\\n';\n}\n",
+        "output": "Export CSV\n",
+        "when": "Utilisez-le si plusieurs types de rapports suivent les mêmes étapes mais doivent créer des exports différents.",
+        "compare": "Factory Method choisit un produit, comme un export. Abstract Factory fournit plusieurs produits prévus pour fonctionner ensemble, comme un annuaire et un canal de notification."
+    },
+    {
+        "id": "abstract-factory",
+        "name": "Abstract Factory",
+        "family": "creation",
+        "summary": "Créer des familles cohérentes de produits sans exposer leurs classes concrètes.",
+        "situation": "Une fabrique fournit une famille",
+        "reading": "Fabrique impose deux créations. SuiteLocale fournit un canal et un annuaire compatibles. Le client dépend des deux contrats, pas des types locaux.",
+        "limit": "Chaque produit possède une durée de vie indépendante grâce à unique_ptr. Une seconde suite doit implémenter les deux méthodes.",
+        "code": "#include <iostream>\n#include <string>\n#include <memory>\n\nstruct Canal {\n    virtual ~Canal() = default;\n    virtual std::string nom() const = 0;\n};\n\nstruct Annuaire {\n    virtual ~Annuaire() = default;\n    virtual std::string nom() const = 0;\n};\n\nstruct CanalLocal final : Canal {\n    std::string nom() const override { return \"Canal local\"; }\n};\n\nstruct AnnuaireLocal final : Annuaire {\n    std::string nom() const override { return \"Annuaire local\"; }\n};\n\nstruct Fabrique {\n    virtual ~Fabrique() = default;\n    virtual std::unique_ptr<Canal> canal() const = 0;\n    virtual std::unique_ptr<Annuaire> annuaire() const = 0;\n};\n\nstruct SuiteLocale final : Fabrique {\n    std::unique_ptr<Canal> canal() const override {\n        return std::make_unique<CanalLocal>();\n    }\n    std::unique_ptr<Annuaire> annuaire() const override {\n        return std::make_unique<AnnuaireLocal>();\n    }\n};\n\nint main() {\n    SuiteLocale suite;\n    const Fabrique& factory = suite;\n    std::cout << factory.canal()->nom() << \" + \"\n              << factory.annuaire()->nom() << '\\n';\n}\n",
+        "output": "Canal local + Annuaire local\n",
+        "when": "Utilisez-le quand changer de fournisseur doit remplacer tout un ensemble d’outils compatibles.",
+        "compare": "Factory Method concerne le choix d’un produit. Abstract Factory concerne le choix d’une famille de produits. Builder prépare progressivement un seul objet."
+    },
+    {
+        "id": "builder",
+        "name": "Builder",
+        "family": "creation",
+        "summary": "Assembler progressivement un objet, puis restituer un résultat cohérent.",
+        "situation": "Composer des options avant la construction",
+        "reading": "titre() et avecStock() configurent le builder et renvoient *this pour enchaîner les appels. construire() retourne une nouvelle valeur Rapport.",
+        "limit": "Le résultat possède ses données. Pour un objet à deux paramètres seulement, un constructeur peut suffire.",
+        "code": "#include <iostream>\n#include <string>\n#include <utility>\n\nstruct Rapport {\n    std::string titre;\n    bool stock;\n};\n\nclass RapportBuilder {\npublic:\n    RapportBuilder& titre(std::string valeur) {\n        titre_ = std::move(valeur);\n        return *this;\n    }\n\n    RapportBuilder& avecStock() {\n        stock_ = true;\n        return *this;\n    }\n\n    Rapport construire() const { return {titre_, stock_}; }\n\nprivate:\n    std::string titre_ = \"Rapport\";\n    bool stock_ = false;\n};\n\nint main() {\n    const auto rapport = RapportBuilder{}.titre(\"Inventaire\").avecStock().construire();\n    std::cout << rapport.titre << \" : stock \" << std::boolalpha << rapport.stock << '\\n';\n}\n",
+        "output": "Inventaire : stock true\n",
+        "when": "Utilisez-le quand un objet a plusieurs informations à renseigner, avec des choix facultatifs ou une préparation en plusieurs étapes.",
+        "compare": "Builder rassemble les morceaux d’un nouvel objet. Prototype part d’un objet déjà configuré et en fait une copie."
     }
 ];
