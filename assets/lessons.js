@@ -128,5 +128,31 @@ window.CPP_LESSONS = [
         "output": "Inventaire : stock true\n",
         "when": "Utilisez-le quand un objet a plusieurs informations à renseigner, avec des choix facultatifs ou une préparation en plusieurs étapes.",
         "compare": "Builder rassemble les morceaux d’un nouvel objet. Prototype part d’un objet déjà configuré et en fait une copie."
+    },
+    {
+        "id": "prototype",
+        "name": "Prototype",
+        "family": "creation",
+        "summary": "Créer une nouvelle configuration à partir d’un objet modèle existant.",
+        "situation": "Copier en conservant le type réel",
+        "reading": "cloner() est virtuel et retourne un propriétaire de Document. Note construit une copie de son propre type avec *this.",
+        "limit": "La chaîne se copie par valeur. Des membres propriétaires exigeraient une politique de copie explicite.",
+        "code": "#include <iostream>\n#include <string>\n#include <memory>\n#include <utility>\n\nstruct Document {\n    virtual ~Document() = default;\n    virtual std::unique_ptr<Document> cloner() const = 0;\n    virtual std::string titre() const = 0;\n};\n\nclass Note final : public Document {\npublic:\n    explicit Note(std::string titre) : titre_(std::move(titre)) {}\n\n    std::unique_ptr<Document> cloner() const override {\n        return std::make_unique<Note>(*this);\n    }\n\n    std::string titre() const override { return titre_; }\n\nprivate:\n    std::string titre_;\n};\n\nint main() {\n    Note original{\"Contrat\"};\n    const auto copie = original.cloner();\n    std::cout << copie->titre() << '\\n';\n}\n",
+        "output": "Contrat\n",
+        "when": "Utilisez-le si préparer un objet demande beaucoup de réglages et que plusieurs objets doivent partir des mêmes réglages.",
+        "compare": "Builder construit étape après étape. Prototype reproduit un point de départ existant. Une copie doit être distincte de l’original, même si leurs valeurs sont d’abord identiques."
+    },
+    {
+        "id": "singleton",
+        "name": "Singleton",
+        "family": "creation",
+        "summary": "Contrôler l’accès à une instance unique dans une portée explicitement définie.",
+        "situation": "Une seule instance accessible",
+        "reading": "instance() contient une variable locale statique. Les copies sont supprimées et le constructeur est privé.",
+        "limit": "L’initialisation locale statique est synchronisée depuis C++11. La synchronisation des modifications de l’objet reste une autre question. Le global implicite complique les tests.",
+        "code": "#include <iostream>\n#include <string>\n\nclass Configuration {\npublic:\n    static Configuration& instance() {\n        static Configuration configuration;\n        return configuration;\n    }\n\n    Configuration(const Configuration&) = delete;\n    Configuration& operator=(const Configuration&) = delete;\n    std::string langue() const { return \"fr\"; }\n\nprivate:\n    Configuration() = default;\n};\n\nint main() {\n    std::cout << Configuration::instance().langue() << '\\n';\n}\n",
+        "output": "fr\n",
+        "when": "Utilisez-le si cette unicité est une vraie contrainte dans le processus et si la configuration reste stable.",
+        "compare": "Une classe avec des méthodes statiques ne crée pas forcément d’objet. Singleton fournit bien un objet unique. Transmettre un objet partagé peut offrir le même partage sans imposer un accès global."
     }
 ];
