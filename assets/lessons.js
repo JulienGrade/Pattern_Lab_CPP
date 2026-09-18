@@ -154,5 +154,44 @@ window.CPP_LESSONS = [
         "output": "fr\n",
         "when": "Utilisez-le si cette unicité est une vraie contrainte dans le processus et si la configuration reste stable.",
         "compare": "Une classe avec des méthodes statiques ne crée pas forcément d’objet. Singleton fournit bien un objet unique. Transmettre un objet partagé peut offrir le même partage sans imposer un accès global."
+    },
+    {
+        "id": "adapter",
+        "name": "Adapter",
+        "family": "structure",
+        "summary": "Traduire une interface existante vers celle attendue par le client.",
+        "situation": "Traduire un contrat et ses unités",
+        "reading": "Paiement attend des centimes alors que le terminal prend des euros entiers. Adaptateur vérifie la compatibilité puis convertit avant de déléguer.",
+        "limit": "La limite du terminal est explicite. Une somme de 2550 centimes est refusée, car elle perdrait des centimes dans cette API simplifiée.",
+        "code": "#include <iostream>\n#include <stdexcept>\n\nstruct Paiement {\n    virtual ~Paiement() = default;\n    virtual int payerCentimes(int centimes) const = 0;\n};\n\nstruct AncienTerminal {\n    int reglerEuros(int euros) const { return euros; }\n};\n\nclass Adaptateur final : public Paiement {\npublic:\n    explicit Adaptateur(const AncienTerminal& terminal) : terminal_(terminal) {}\n\n    int payerCentimes(int centimes) const override {\n        if (centimes < 0 || centimes % 100 != 0) {\n            throw std::invalid_argument(\"Le terminal accepte des euros entiers\");\n        }\n        return terminal_.reglerEuros(centimes / 100);\n    }\n\nprivate:\n    const AncienTerminal& terminal_;\n};\n\nint main() {\n    AncienTerminal ancien;\n    Adaptateur paiement{ancien};\n    std::cout << paiement.payerCentimes(2500) << \" euros\\n\";\n}\n",
+        "output": "25 euros\n",
+        "when": "Utilisez-le pour brancher une bibliothèque ou un service dont les méthodes ne correspondent pas au contrat attendu.",
+        "compare": "Adapter rend deux contrats compatibles. Facade propose une entrée simple vers plusieurs services. Proxy garde le même contrat et contrôle l’accès."
+    },
+    {
+        "id": "bridge",
+        "name": "Bridge",
+        "family": "structure",
+        "summary": "Faire évoluer indépendamment une abstraction métier et son mécanisme de réalisation.",
+        "situation": "Faire varier deux axes indépendants",
+        "reading": "Alerte et AlerteUrgente forment l’axe des messages. Canal et Mail forment l’axe d’envoi. La référence canal_ relie ces axes.",
+        "limit": "Un nouveau canal peut servir aux deux types d’alerte. Le canal doit vivre plus longtemps que son utilisateur.",
+        "code": "#include <iostream>\n#include <string>\n\nstruct Canal {\n    virtual ~Canal() = default;\n    virtual std::string envoyer(std::string message) const = 0;\n};\n\nstruct Mail final : Canal {\n    std::string envoyer(std::string message) const override {\n        return \"Mail : \" + message;\n    }\n};\n\nclass Alerte {\npublic:\n    explicit Alerte(const Canal& canal) : canal_(canal) {}\n    virtual ~Alerte() = default;\n    virtual std::string diffuser() const { return canal_.envoyer(\"Information\"); }\n\nprotected:\n    const Canal& canal_;\n};\n\nclass AlerteUrgente final : public Alerte {\npublic:\n    using Alerte::Alerte;\n    std::string diffuser() const override { return canal_.envoyer(\"Urgent\"); }\n};\n\nint main() {\n    Mail canal;\n    AlerteUrgente alerte{canal};\n    std::cout << alerte.diffuser() << '\\n';\n}\n",
+        "output": "Mail : Urgent\n",
+        "when": "Utilisez-le quand deux choix évoluent séparément : ici, le contenu du document et son format de sortie.",
+        "compare": "Adapter relie après coup des contrats différents. Bridge organise dès la conception deux éléments qui doivent évoluer séparément."
+    },
+    {
+        "id": "composite",
+        "name": "Composite",
+        "family": "structure",
+        "summary": "Traiter une feuille et un groupe avec le même contrat, dans une structure arborescente.",
+        "situation": "Parcourir uniformément un arbre",
+        "reading": "Article fournit un prix. Lot additionne les prix des Element qu’il possède. Un enfant peut lui-même être un Lot.",
+        "limit": "unique_ptr exprime la propriété exclusive de chaque enfant. L’exemple utilise de petits prix entiers.",
+        "code": "#include <iostream>\n#include <memory>\n#include <vector>\n#include <utility>\n#include <stdexcept>\n\nstruct Element {\n    virtual ~Element() = default;\n    virtual int prix() const = 0;\n};\n\nclass Article final : public Element {\npublic:\n    explicit Article(int prix) : prix_(prix) {}\n    int prix() const override { return prix_; }\n\nprivate:\n    int prix_;\n};\n\nclass Lot final : public Element {\npublic:\n    void ajouter(std::unique_ptr<Element> enfant) {\n        if (!enfant) throw std::invalid_argument(\"Enfant absent\");\n        enfants_.push_back(std::move(enfant));\n    }\n\n    int prix() const override {\n        int total = 0;\n        for (const auto& enfant : enfants_) {\n            total += enfant->prix();\n        }\n        return total;\n    }\n\nprivate:\n    std::vector<std::unique_ptr<Element>> enfants_;\n};\n\nint main() {\n    Lot lot;\n    lot.ajouter(std::make_unique<Article>(10));\n    lot.ajouter(std::make_unique<Article>(20));\n    std::cout << lot.prix() << '\\n';\n}\n",
+        "output": "30\n",
+        "when": "Utilisez-le quand les objets forment un arbre et qu’une action doit s’appliquer à un élément seul comme à un ensemble.",
+        "compare": "Composite organise plusieurs enfants. Decorator enveloppe généralement un seul objet pour lui ajouter un comportement."
     }
 ];
