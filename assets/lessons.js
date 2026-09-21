@@ -193,5 +193,57 @@ window.CPP_LESSONS = [
         "output": "30\n",
         "when": "Utilisez-le quand les objets forment un arbre et qu’une action doit s’appliquer à un élément seul comme à un ensemble.",
         "compare": "Composite organise plusieurs enfants. Decorator enveloppe généralement un seul objet pour lui ajouter un comportement."
+    },
+    {
+        "id": "decorator",
+        "name": "Decorator",
+        "family": "structure",
+        "summary": "Ajouter des responsabilités autour d’un objet tout en préservant son contrat.",
+        "situation": "Ajouter un comportement autour d’un autre",
+        "reading": "Journalise respecte le même contrat que Mail. Il ajoute le préfixe puis transmet l’appel à suivant_.",
+        "limit": "Le décorateur observe ici son composant. Mail doit rester vivant pendant l’appel.",
+        "code": "#include <iostream>\n#include <string>\n\nstruct Canal {\n    virtual ~Canal() = default;\n    virtual std::string envoyer() const = 0;\n};\n\nstruct Mail final : Canal {\n    std::string envoyer() const override { return \"Mail\"; }\n};\n\nclass Journalise final : public Canal {\npublic:\n    explicit Journalise(const Canal& suivant) : suivant_(suivant) {}\n    std::string envoyer() const override { return \"[log] \" + suivant_.envoyer(); }\n\nprivate:\n    const Canal& suivant_;\n};\n\nint main() {\n    Mail mail;\n    Journalise canal{mail};\n    std::cout << canal.envoyer() << '\\n';\n}\n",
+        "output": "[log] Mail\n",
+        "when": "Utilisez-le pour ajouter des options combinables à un service tout en gardant la même méthode d’appel.",
+        "compare": "Decorator ajoute un comportement. Proxy autorise, bloque ou retarde l’accès. Adapter change le contrat utilisé pour appeler un service."
+    },
+    {
+        "id": "facade",
+        "name": "Facade",
+        "family": "structure",
+        "summary": "Proposer une entrée simplifiée vers plusieurs responsabilités d’un sous-système.",
+        "situation": "Présenter une action cohérente",
+        "reading": "Vente::confirmer() orchestre Stock puis Facturation. L’appelant utilise une seule opération métier.",
+        "limit": "Cet exemple montre l’orchestration. Il ne traite pas l’annulation d’une réservation après échec de facturation.",
+        "code": "#include <iostream>\n\nstruct Stock {\n    void reserver() const { std::cout << \"Stock reserve\\n\"; }\n};\n\nstruct Facturation {\n    void facturer() const { std::cout << \"Facture creee\\n\"; }\n};\n\nclass Vente {\npublic:\n    void confirmer() const {\n        stock_.reserver();\n        facturation_.facturer();\n    }\n\nprivate:\n    Stock stock_;\n    Facturation facturation_;\n};\n\nint main() {\n    Vente vente;\n    vente.confirmer();\n}\n",
+        "output": "Stock reserve\nFacture creee\n",
+        "when": "Utilisez-le si plusieurs écrans répètent les mêmes appels techniques pour effectuer une opération métier.",
+        "compare": "Facade simplifie l’utilisation de plusieurs services. Mediator organise les échanges entre plusieurs objets. Une façade ne remplace pas toute la logique métier par une seule énorme classe."
+    },
+    {
+        "id": "flyweight",
+        "name": "Flyweight",
+        "family": "structure",
+        "summary": "Partager l’état intrinsèque immuable pour éviter de le répéter dans de nombreuses occurrences.",
+        "situation": "Partager la partie immuable",
+        "reading": "Styles conserve un cache par nom de police. Les deux lettres ont des positions distinctes mais partagent le même Style.",
+        "limit": "Le shared_ptr constant prolonge la vie du style tout en empêchant sa modification par les lettres. Le cache conserve ses entrées.",
+        "code": "#include <iostream>\n#include <string>\n#include <memory>\n#include <map>\n\nstruct Style {\n    const std::string police;\n};\n\nclass Styles {\npublic:\n    std::shared_ptr<const Style> obtenir(const std::string& police) {\n        auto& style = cache_[police];\n        if (!style) style = std::make_shared<const Style>(Style{police});\n        return style;\n    }\n\nprivate:\n    std::map<std::string, std::shared_ptr<const Style>> cache_;\n};\n\nstruct Lettre {\n    char valeur;\n    int position;\n    std::shared_ptr<const Style> style;\n};\n\nint main() {\n    Styles styles;\n    Lettre a{'A', 0, styles.obtenir(\"Comfortaa\")};\n    Lettre b{'B', 1, styles.obtenir(\"Comfortaa\")};\n    std::cout << std::boolalpha << (a.style == b.style) << '\\n';\n}\n",
+        "output": "true\n",
+        "when": "Utilisez-le lorsque beaucoup d’objets répètent réellement des données identiques et que leur partage économise une quantité utile de mémoire.",
+        "compare": "Singleton impose une seule instance pour une classe. Flyweight permet plusieurs instances partagées, une par valeur ou clé du catalogue."
+    },
+    {
+        "id": "proxy",
+        "name": "Proxy",
+        "family": "structure",
+        "summary": "Contrôler l’accès à un objet à travers le même contrat.",
+        "situation": "Retarder une création coûteuse",
+        "reading": "ImageProxy respecte le contrat Image. Il construit ImageDisque au premier affichage, puis réutilise la même instance.",
+        "limit": "Le chargement n’apparaît qu’une fois. Cet exemple mono-thread ne synchronise pas les appels concurrents.",
+        "code": "#include <iostream>\n#include <memory>\n\nstruct Image {\n    virtual ~Image() = default;\n    virtual void afficher() = 0;\n};\n\nstruct ImageDisque final : Image {\n    ImageDisque() { std::cout << \"Chargement\\n\"; }\n    void afficher() override { std::cout << \"Affichage\\n\"; }\n};\n\nclass ImageProxy final : public Image {\npublic:\n    void afficher() override {\n        if (!image_) image_ = std::make_unique<ImageDisque>();\n        image_->afficher();\n    }\n\nprivate:\n    std::unique_ptr<ImageDisque> image_;\n};\n\nint main() {\n    ImageProxy image;\n    image.afficher();\n    image.afficher();\n}\n",
+        "output": "Chargement\nAffichage\nAffichage\n",
+        "when": "Utilisez-le si vous devez contrôler un accès, différer un chargement ou interposer un cache derrière le même contrat.",
+        "compare": "Proxy contrôle l’accès à un service. Decorator enrichit ce que fait le service. Adapter permet de l’appeler avec un autre contrat."
     }
 ];
