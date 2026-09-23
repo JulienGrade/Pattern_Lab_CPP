@@ -245,5 +245,44 @@ window.CPP_LESSONS = [
         "output": "Chargement\nAffichage\nAffichage\n",
         "when": "Utilisez-le si vous devez contrôler un accès, différer un chargement ou interposer un cache derrière le même contrat.",
         "compare": "Proxy contrôle l’accès à un service. Decorator enrichit ce que fait le service. Adapter permet de l’appeler avec un autre contrat."
+    },
+    {
+        "id": "chain",
+        "name": "Chain of Responsibility",
+        "family": "comportement",
+        "summary": "Faire circuler une requête entre des traitements chaînés selon une politique explicite.",
+        "situation": "Faire passer une demande dans plusieurs filtres",
+        "reading": "Filtre traite sa règle puis transmet à suivant_ si elle réussit. Positif et Petit vérifient deux conditions distinctes.",
+        "limit": "Les filtres sont observés par pointeur et construits avant la chaîne. L’échec interrompt immédiatement le parcours.",
+        "code": "#include <iostream>\n\nclass Filtre {\npublic:\n    explicit Filtre(const Filtre* suivant = nullptr) : suivant_(suivant) {}\n    virtual ~Filtre() = default;\n\n    bool traiter(int valeur) const {\n        return accepter(valeur) && (!suivant_ || suivant_->traiter(valeur));\n    }\n\nprotected:\n    virtual bool accepter(int valeur) const = 0;\n\nprivate:\n    const Filtre* suivant_;\n};\n\nclass Positif final : public Filtre {\npublic:\n    using Filtre::Filtre;\n    bool accepter(int valeur) const override { return valeur > 0; }\n};\n\nclass Petit final : public Filtre {\npublic:\n    bool accepter(int valeur) const override { return valeur < 100; }\n};\n\nint main() {\n    Petit petit;\n    Positif chaine{&petit};\n    std::cout << std::boolalpha << chaine.traiter(42) << ' ' << chaine.traiter(120) << '\\n';\n}\n",
+        "output": "true false\n",
+        "when": "Utilisez-le quand les contrôles doivent être réordonnés, ajoutés ou réutilisés dans plusieurs parcours.",
+        "compare": "Chain of Responsibility fait passer une demande dans plusieurs contrôles. Strategy choisit une seule manière d’effectuer un travail."
+    },
+    {
+        "id": "command",
+        "name": "Command",
+        "family": "comportement",
+        "summary": "Représenter une demande d’exécution comme un objet contenant son contexte.",
+        "situation": "Transformer une action en objet",
+        "reading": "Incrementer conserve son récepteur par référence. executer() réalise l’action et annuler() réalise son inverse.",
+        "limit": "Le scénario annule exactement une exécution. Un historique complet devrait empêcher les annulations supplémentaires.",
+        "code": "#include <iostream>\n\nstruct Compteur {\n    int valeur = 0;\n};\n\nstruct Commande {\n    virtual ~Commande() = default;\n    virtual void executer() = 0;\n    virtual void annuler() = 0;\n};\n\nclass Incrementer final : public Commande {\npublic:\n    explicit Incrementer(Compteur& compteur) : compteur_(compteur) {}\n    void executer() override { ++compteur_.valeur; }\n    void annuler() override { --compteur_.valeur; }\n\nprivate:\n    Compteur& compteur_;\n};\n\nint main() {\n    Compteur compteur;\n    Incrementer action{compteur};\n    action.executer();\n    std::cout << compteur.valeur << '\\n';\n    action.annuler();\n    std::cout << compteur.valeur << '\\n';\n}\n",
+        "output": "1\n0\n",
+        "when": "Utilisez-le si une action doit être mise en attente, historisée ou rejouée plutôt qu’exécutée immédiatement.",
+        "compare": "Command représente « quoi faire ». Strategy représente « comment faire le même travail ». Une file de commandes n’est pas nécessairement une file persistante."
+    },
+    {
+        "id": "interpreter",
+        "name": "Interpreter",
+        "family": "comportement",
+        "summary": "Représenter les règles d’un petit langage et les évaluer sur un contexte.",
+        "situation": "Évaluer un petit arbre d’expressions",
+        "reading": "Nombre représente une valeur et Somme représente un opérateur binaire. evaluer() appelle récursivement ses deux enfants.",
+        "limit": "L’exemple construit directement l’arbre. Il n’analyse aucune chaîne de caractères et observe des enfants vivants.",
+        "code": "#include <iostream>\n\nstruct Expression {\n    virtual ~Expression() = default;\n    virtual int evaluer() const = 0;\n};\n\nstruct Nombre final : Expression {\n    explicit Nombre(int nombre) : valeur(nombre) {}\n    int evaluer() const override { return valeur; }\n    int valeur;\n};\n\nclass Somme final : public Expression {\npublic:\n    Somme(const Expression& gauche, const Expression& droite)\n        : gauche_(gauche), droite_(droite) {}\n\n    int evaluer() const override { return gauche_.evaluer() + droite_.evaluer(); }\n\nprivate:\n    const Expression& gauche_;\n    const Expression& droite_;\n};\n\nint main() {\n    Nombre a{2};\n    Nombre b{3};\n    Somme expression{a, b};\n    std::cout << expression.evaluer() << '\\n';\n}\n",
+        "output": "5\n",
+        "when": "Utilisez-le pour un petit langage de règles dont la grammaire reste limitée et stable.",
+        "compare": "Composite décrit la forme d’un arbre. Interpreter utilise un arbre pour donner un sens à une expression et calculer son résultat."
     }
 ];
