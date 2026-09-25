@@ -284,5 +284,44 @@ window.CPP_LESSONS = [
         "output": "5\n",
         "when": "Utilisez-le pour un petit langage de règles dont la grammaire reste limitée et stable.",
         "compare": "Composite décrit la forme d’un arbre. Interpreter utilise un arbre pour donner un sens à une expression et calculer son résultat."
+    },
+    {
+        "id": "iterator",
+        "name": "Iterator",
+        "family": "comportement",
+        "summary": "Parcourir une collection sans exposer sa représentation interne.",
+        "situation": "Parcourir sans exposer le stockage",
+        "reading": "Collection fournit begin() et end(). La boucle de parcours utilise ces itérateurs standards pour visiter les éléments.",
+        "limit": "Les itérateurs const donnent une consultation. Une modification structurelle du vector peut invalider des itérateurs.",
+        "code": "#include <iostream>\n#include <vector>\n\nclass Collection {\npublic:\n    auto begin() const { return valeurs_.begin(); }\n    auto end() const { return valeurs_.end(); }\n\nprivate:\n    std::vector<int> valeurs_{2, 4, 6};\n};\n\nint main() {\n    Collection collection;\n    for (int valeur : collection) {\n        std::cout << valeur << '\\n';\n    }\n}\n",
+        "output": "2\n4\n6\n",
+        "when": "Utilisez-le pour exposer un parcours standard tout en gardant la liberté de changer le stockage.",
+        "compare": "Iterator décrit comment parcourir une collection. Composite décrit comment organiser des éléments et des groupes. Une structure Composite peut être parcourue avec un Iterator."
+    },
+    {
+        "id": "mediator",
+        "name": "Mediator",
+        "family": "comportement",
+        "summary": "Centraliser un protocole de collaboration entre plusieurs objets collègues.",
+        "situation": "Centraliser une interaction entre composants",
+        "reading": "Champ signale la saisie à Mediateur. Ce dernier met à jour Vue. Le champ ne connaît pas directement la vue.",
+        "limit": "Le médiateur coordonne l’échange. Les règles métier complexes appartiendraient à un service dédié.",
+        "code": "#include <iostream>\n#include <string>\n#include <utility>\n\nstruct Vue {\n    std::string texte;\n};\n\nclass Mediateur {\npublic:\n    explicit Mediateur(Vue& vue) : vue_(vue) {}\n\n    void texteSaisi(std::string texte) {\n        vue_.texte = \"Recherche : \" + texte;\n    }\n\nprivate:\n    Vue& vue_;\n};\n\nclass Champ {\npublic:\n    explicit Champ(Mediateur& mediateur) : mediateur_(mediateur) {}\n    void saisir(std::string texte) { mediateur_.texteSaisi(std::move(texte)); }\n\nprivate:\n    Mediateur& mediateur_;\n};\n\nint main() {\n    Vue vue;\n    Mediateur mediateur{vue};\n    Champ champ{mediateur};\n    champ.saisir(\"C++\");\n    std::cout << vue.texte << '\\n';\n}\n",
+        "output": "Recherche : C++\n",
+        "when": "Utilisez-le quand plusieurs composants se parlent dans tous les sens et que leurs règles de coordination deviennent difficiles à suivre.",
+        "compare": "Mediator décide comment plusieurs objets collaborent. Observer diffuse un événement à des abonnés sans centraliser toutes leurs décisions."
+    },
+    {
+        "id": "memento",
+        "name": "Memento",
+        "family": "comportement",
+        "summary": "Capturer un état pour le restaurer sans exposer directement sa représentation au gardien.",
+        "situation": "Revenir à un état précédent",
+        "reading": "Editeur crée une Sauvegarde par valeur. Après modification, restaurer() rétablit le texte enregistré.",
+        "limit": "Le contenu de cette sauvegarde simple est public. Un memento opaque peut renforcer l’encapsulation si le contenu est sensible.",
+        "code": "#include <iostream>\n#include <string>\n#include <utility>\n\nclass Editeur {\npublic:\n    struct Sauvegarde {\n        std::string texte;\n    };\n\n    void saisir(std::string texte) { texte_ = std::move(texte); }\n    Sauvegarde sauvegarder() const { return {texte_}; }\n    void restaurer(const Sauvegarde& sauvegarde) { texte_ = sauvegarde.texte; }\n    const std::string& texte() const { return texte_; }\n\nprivate:\n    std::string texte_;\n};\n\nint main() {\n    Editeur editeur;\n    editeur.saisir(\"Version A\");\n    const auto sauvegarde = editeur.sauvegarder();\n    editeur.saisir(\"Version B\");\n    editeur.restaurer(sauvegarde);\n    std::cout << editeur.texte() << '\\n';\n}\n",
+        "output": "Version A\n",
+        "when": "Utilisez-le pour une fonction Annuler ou pour revenir à des versions successives d’un objet.",
+        "compare": "Memento conserve un état. Command conserve une action. Revenir à un état et exécuter une action inverse sont deux manières différentes de proposer Annuler."
     }
 ];
