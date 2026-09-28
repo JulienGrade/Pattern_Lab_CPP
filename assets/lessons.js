@@ -323,5 +323,44 @@ window.CPP_LESSONS = [
         "output": "Version A\n",
         "when": "Utilisez-le pour une fonction Annuler ou pour revenir à des versions successives d’un objet.",
         "compare": "Memento conserve un état. Command conserve une action. Revenir à un état et exécuter une action inverse sont deux manières différentes de proposer Annuler."
+    },
+    {
+        "id": "observer",
+        "name": "Observer",
+        "family": "comportement",
+        "summary": "Informer des abonnés d’un fait sans coder chaque réaction dans son émetteur.",
+        "situation": "Prévenir plusieurs abonnés",
+        "reading": "Stock conserve des callbacks et les appelle après modification. La lambda reçoit la nouvelle quantité.",
+        "limit": "Cette version n’ajoute ni désabonnement ni gestion de modification de la liste pendant notification. Les captures doivent respecter la durée de vie des objets observés.",
+        "code": "#include <iostream>\n#include <vector>\n#include <functional>\n#include <utility>\n\nclass Stock {\npublic:\n    void abonner(std::function<void(int)> callback) {\n        abonnes_.push_back(std::move(callback));\n    }\n\n    void modifier(int quantite) {\n        quantite_ = quantite;\n        for (const auto& callback : abonnes_) callback(quantite_);\n    }\n\nprivate:\n    int quantite_ = 0;\n    std::vector<std::function<void(int)>> abonnes_;\n};\n\nint main() {\n    Stock stock;\n    stock.abonner([](int quantite) { std::cout << \"Stock : \" << quantite << '\\n'; });\n    stock.modifier(5);\n}\n",
+        "output": "Stock : 5\n",
+        "when": "Utilisez-le quand plusieurs réactions indépendantes doivent se déclencher après un même événement.",
+        "compare": "Observer diffuse une information. Mediator coordonne une collaboration. Un abonné choisit quoi faire de l’événement reçu."
+    },
+    {
+        "id": "state",
+        "name": "State",
+        "family": "comportement",
+        "summary": "Déléguer un comportement à un objet représentant l’état courant.",
+        "situation": "Confier la transition à l’état courant",
+        "reading": "Commande détient un Etat. Brouillon fournit l’état Payee quand la transition est demandée. L’état Payee refuse toute nouvelle transition.",
+        "limit": "Le nouveau propriétaire remplace l’ancien après création réussie. Le second appel serait une erreur métier.",
+        "code": "#include <iostream>\n#include <string>\n#include <memory>\n#include <stdexcept>\n\nstruct Etat {\n    virtual ~Etat() = default;\n    virtual std::string nom() const = 0;\n    virtual std::unique_ptr<Etat> suivant() const = 0;\n};\n\nstruct Payee final : Etat {\n    std::string nom() const override { return \"Payee\"; }\n    std::unique_ptr<Etat> suivant() const override {\n        throw std::logic_error(\"Deja payee\");\n    }\n};\n\nstruct Brouillon final : Etat {\n    std::string nom() const override { return \"Brouillon\"; }\n    std::unique_ptr<Etat> suivant() const override { return std::make_unique<Payee>(); }\n};\n\nclass Commande {\npublic:\n    void avancer() { etat_ = etat_->suivant(); }\n    std::string etat() const { return etat_->nom(); }\n\nprivate:\n    std::unique_ptr<Etat> etat_ = std::make_unique<Brouillon>();\n};\n\nint main() {\n    Commande commande;\n    std::cout << commande.etat() << '\\n';\n    commande.avancer();\n    std::cout << commande.etat() << '\\n';\n}\n",
+        "output": "Brouillon\nPayee\n",
+        "when": "Utilisez-le si de nombreuses actions changent de comportement selon l’état et si les conditions deviennent répétitives.",
+        "compare": "State exprime la situation actuelle d’un objet et les actions qu’elle permet. Strategy choisit une manière de calculer, sans représenter un cycle de vie."
+    },
+    {
+        "id": "strategy",
+        "name": "Strategy",
+        "family": "comportement",
+        "summary": "Rendre une règle de calcul interchangeable derrière un contrat stable.",
+        "situation": "Injecter un calcul interchangeable",
+        "reading": "total() appelle le contrat Tarif. Standard et Express changent les frais sans changer le calcul du montant total.",
+        "limit": "Le calcul sélectionné vient de l’objet fourni à l’appel. Le client peut choisir la stratégie à l’exécution.",
+        "code": "#include <iostream>\n\nstruct Tarif {\n    virtual ~Tarif() = default;\n    virtual int frais() const = 0;\n};\n\nstruct Standard final : Tarif {\n    int frais() const override { return 5; }\n};\n\nstruct Express final : Tarif {\n    int frais() const override { return 12; }\n};\n\nint total(int montant, const Tarif& tarif) {\n    return montant + tarif.frais();\n}\n\nint main() {\n    Standard standard;\n    Express express;\n    std::cout << total(100, standard) << ' ' << total(100, express) << '\\n';\n}\n",
+        "output": "105 112\n",
+        "when": "Utilisez-le si plusieurs manières de faire le même calcul doivent être interchangeables.",
+        "compare": "Strategy choisit une manière de travailler. State change le comportement en fonction d’un état métier. Template Method conserve un déroulement et laisse des sous-classes préciser certaines étapes."
     }
 ];
