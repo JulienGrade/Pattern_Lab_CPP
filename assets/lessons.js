@@ -362,5 +362,31 @@ window.CPP_LESSONS = [
         "output": "105 112\n",
         "when": "Utilisez-le si plusieurs manières de faire le même calcul doivent être interchangeables.",
         "compare": "Strategy choisit une manière de travailler. State change le comportement en fonction d’un état métier. Template Method conserve un déroulement et laisse des sous-classes préciser certaines étapes."
+    },
+    {
+        "id": "template-method",
+        "name": "Template Method",
+        "family": "comportement",
+        "summary": "Fixer le squelette d’un algorithme et spécialiser certaines étapes par héritage.",
+        "situation": "Fixer les étapes, spécialiser un détail",
+        "reading": "Import::executer() impose lecture, conversion et validation. ImportCsv redéfinit uniquement l’étape convertir().",
+        "limit": "Template Method est ici un pattern fondé sur l’héritage. Il ne nécessite aucun template C++.",
+        "code": "#include <iostream>\n\nclass Import {\npublic:\n    virtual ~Import() = default;\n\n    void executer() const {\n        std::cout << \"Lecture\\n\";\n        convertir();\n        std::cout << \"Validation\\n\";\n    }\n\nprotected:\n    virtual void convertir() const = 0;\n};\n\nclass ImportCsv final : public Import {\n    void convertir() const override { std::cout << \"Conversion CSV\\n\"; }\n};\n\nint main() {\n    ImportCsv import;\n    import.executer();\n}\n",
+        "output": "Lecture\nConversion CSV\nValidation\n",
+        "when": "Utilisez-le quand plusieurs traitements partagent un ordre d’étapes stable mais diffèrent sur quelques étapes.",
+        "compare": "Template Method repose sur l’héritage. Strategy confie un travail à un autre objet. Strategy permet plus facilement de changer ce choix sur un objet déjà créé."
+    },
+    {
+        "id": "visitor",
+        "name": "Visitor",
+        "family": "comportement",
+        "summary": "Ajouter une opération sur plusieurs types stables grâce à une double répartition des appels.",
+        "situation": "Ajouter une opération sur plusieurs types",
+        "reading": "Chaque Element appelle visiter(*this). La redéfinition d’accepter() choisit d’abord le type concret, puis la surcharge de visiter() utilise ce type.",
+        "limit": "Ajouter un visiteur laisse les éléments stables. Ajouter un type d’élément impose de compléter tous les visiteurs.",
+        "code": "#include <iostream>\n\nclass Fichier;\nclass Dossier;\n\nstruct Visiteur {\n    virtual ~Visiteur() = default;\n    virtual void visiter(const Fichier&) = 0;\n    virtual void visiter(const Dossier&) = 0;\n};\n\nstruct Element {\n    virtual ~Element() = default;\n    virtual void accepter(Visiteur&) const = 0;\n};\n\nclass Fichier final : public Element {\npublic:\n    void accepter(Visiteur& visiteur) const override { visiteur.visiter(*this); }\n};\n\nclass Dossier final : public Element {\npublic:\n    void accepter(Visiteur& visiteur) const override { visiteur.visiter(*this); }\n};\n\nstruct Inventaire final : Visiteur {\n    void visiter(const Fichier&) override { std::cout << \"Un fichier\\n\"; }\n    void visiter(const Dossier&) override { std::cout << \"Un dossier\\n\"; }\n};\n\nint main() {\n    Fichier fichier;\n    Dossier dossier;\n    Inventaire inventaire;\n    fichier.accepter(inventaire);\n    dossier.accepter(inventaire);\n}\n",
+        "output": "Un fichier\nUn dossier\n",
+        "when": "Utilisez-le si les types de demandes changent peu, mais que vous ajoutez souvent de nouvelles opérations sur ces types.",
+        "compare": "Ajouter un nouveau visiteur permet d’ajouter une opération sans modifier chaque demande. Ajouter une nouvelle classe de demande demande, au contraire, de mettre les visiteurs à jour."
     }
 ];
