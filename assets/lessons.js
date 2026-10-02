@@ -388,5 +388,31 @@ window.CPP_LESSONS = [
         "output": "Un fichier\nUn dossier\n",
         "when": "Utilisez-le si les types de demandes changent peu, mais que vous ajoutez souvent de nouvelles opérations sur ces types.",
         "compare": "Ajouter un nouveau visiteur permet d’ajouter une opération sans modifier chaque demande. Ajouter une nouvelle classe de demande demande, au contraire, de mettre les visiteurs à jour."
+    },
+    {
+        "id": "mvc",
+        "name": "MVC",
+        "family": "architecture",
+        "summary": "Séparer l’état et les règles, la présentation et la coordination des interactions.",
+        "situation": "Séparer état, rendu et coordination",
+        "reading": "Modele porte le stock. Controleur traite une intention d’approvisionnement. Vue lit l’état pour l’afficher.",
+        "limit": "MVC signifie Modèle-Vue-Contrôleur. Les règles de stock d’un domaine plus riche devraient appartenir au modèle ou à un service métier.",
+        "code": "#include <iostream>\n#include <stdexcept>\n\nstruct Modele {\n    int stock = 0;\n};\n\nstruct Vue {\n    void afficher(const Modele& modele) const {\n        std::cout << \"Stock : \" << modele.stock << '\\n';\n    }\n};\n\nclass Controleur {\npublic:\n    Controleur(Modele& modele, const Vue& vue) : modele_(modele), vue_(vue) {}\n    void approvisionner(int quantite) {\n        if (quantite <= 0) throw std::invalid_argument(\"Quantite positive attendue\");\n        modele_.stock += quantite;\n        vue_.afficher(modele_);\n    }\n\nprivate:\n    Modele& modele_;\n    const Vue& vue_;\n};\n\nint main() {\n    Modele modele;\n    Vue vue;\n    Controleur controleur{modele, vue};\n    controleur.approvisionner(3);\n}\n",
+        "output": "Stock : 3\n",
+        "when": "Utilisez cette séparation quand les règles métier doivent rester compréhensibles même si les écrans changent.",
+        "compare": "MVC organise les responsabilités du modèle, de la vue et du contrôleur. Strategy peut être utilisé à l’intérieur du modèle. MVC est distinct des 23 patterns classiques."
+    },
+    {
+        "id": "value-object",
+        "name": "Value Object",
+        "family": "architecture",
+        "summary": "Représenter une valeur métier immuable, valide et comparable par son contenu.",
+        "situation": "Comparer les valeurs métier",
+        "reading": "Montant stocke des centimes et refuse une valeur négative. L’égalité générée compare les membres, donc deux montants de 500 sont égaux.",
+        "limit": "L’objet expose une lecture, sans méthode de modification. Une identité technique serait inutile pour cette valeur.",
+        "code": "#include <iostream>\n#include <stdexcept>\n\nclass Montant {\npublic:\n    explicit Montant(int centimes) : centimes_(centimes) {\n        if (centimes < 0) throw std::invalid_argument(\"Montant negatif\");\n    }\n\n    bool operator==(const Montant&) const = default;\n    int centimes() const { return centimes_; }\n\nprivate:\n    int centimes_;\n};\n\nint main() {\n    const Montant premier{500};\n    const Montant second{500};\n    std::cout << std::boolalpha << (premier == second) << '\\n';\n}\n",
+        "output": "true\n",
+        "when": "Utilisez-le quand une donnée possède une règle métier ou une signification qu’un simple entier ou texte n’exprime pas bien.",
+        "compare": "Une entité conserve son identité même si ses propriétés changent, comme un dossier identifié par son numéro. Un Value Object est défini par ses valeurs, comme une quantité."
     }
 ];
