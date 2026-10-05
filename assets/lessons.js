@@ -414,5 +414,70 @@ window.CPP_LESSONS = [
         "output": "true\n",
         "when": "Utilisez-le quand une donnée possède une règle métier ou une signification qu’un simple entier ou texte n’exprime pas bien.",
         "compare": "Une entité conserve son identité même si ses propriétés changent, comme un dossier identifié par son numéro. Un Value Object est défini par ses valeurs, comme une quantité."
+    },
+    {
+        "id": "grasp-expert",
+        "name": "Information Expert",
+        "family": "grasp",
+        "summary": "Attribuer une responsabilité à l’objet qui possède les informations nécessaires.",
+        "situation": "Donner le calcul à celui qui connaît les données",
+        "reading": "Ligne connaît sa quantité et son prix. Commande connaît ses lignes et additionne leurs totaux.",
+        "limit": "GRASP désigne des principes généraux d’attribution des responsabilités. L’exemple répartit le calcul aux deux niveaux qui disposent de l’information.",
+        "code": "#include <iostream>\n#include <vector>\n\nstruct Ligne {\n    int quantite;\n    int prix;\n    int total() const { return quantite * prix; }\n};\n\nstruct Commande {\n    std::vector<Ligne> lignes;\n    int total() const {\n        int somme = 0;\n        for (const auto& ligne : lignes) somme += ligne.total();\n        return somme;\n    }\n};\n\nint main() {\n    Commande commande{{{2, 10}, {1, 5}}};\n    std::cout << commande.total() << '\\n';\n}\n",
+        "output": "25\n",
+        "when": "Confiez une décision à l’objet qui connaît déjà les données utiles, si cela reste cohérent avec son rôle.",
+        "compare": "Information Expert aide à choisir où placer une règle. High Cohesion aide à vérifier que l’objet garde un rôle clair."
+    },
+    {
+        "id": "grasp-creator",
+        "name": "Creator",
+        "family": "grasp",
+        "summary": "Confier la création à un objet qui possède les données d’initialisation ou entretient un lien étroit avec le produit.",
+        "situation": "Créer les objets dont on gère la collection",
+        "reading": "Commande vérifie la quantité et crée sa Ligne avant de l’ajouter à la collection.",
+        "limit": "Le créateur est celui qui contient et gère les éléments. Une fabrique distincte serait utile si la création devenait complexe.",
+        "code": "#include <iostream>\n#include <vector>\n#include <stdexcept>\n\nstruct Ligne {\n    int quantite;\n};\n\nclass Commande {\npublic:\n    void ajouter(int quantite) {\n        if (quantite <= 0) throw std::invalid_argument(\"Quantite invalide\");\n        lignes_.push_back(Ligne{quantite});\n    }\n\n    std::size_t taille() const { return lignes_.size(); }\n\nprivate:\n    std::vector<Ligne> lignes_;\n};\n\nint main() {\n    Commande commande;\n    commande.ajouter(2);\n    std::cout << commande.taille() << \" ligne\\n\";\n}\n",
+        "output": "1 ligne\n",
+        "when": "Confiez la création à un objet qui possède, collecte ou utilise directement les données nécessaires.",
+        "compare": "Creator est un principe de répartition des responsabilités. Builder est une solution possible quand cette création demande plusieurs étapes."
+    },
+    {
+        "id": "grasp-controller",
+        "name": "Controller",
+        "family": "grasp",
+        "summary": "Attribuer la réception d’une opération système à un objet qui coordonne sa réalisation.",
+        "situation": "Recevoir une intention et déléguer",
+        "reading": "Controleur reçoit un nom puis appelle Inscription. Le service vérifie la règle et produit le résultat.",
+        "limit": "Le contrôleur coordonne un cas d’utilisation. Il garde peu de règles pour rester facile à faire évoluer.",
+        "code": "#include <iostream>\n#include <string>\n#include <utility>\n#include <stdexcept>\n\nclass Inscription {\npublic:\n    std::string inscrire(std::string nom) const {\n        if (nom.empty()) throw std::invalid_argument(\"Nom requis\");\n        return \"Inscrit : \" + nom;\n    }\n};\n\nclass Controleur {\npublic:\n    explicit Controleur(const Inscription& service) : service_(service) {}\n    std::string recevoir(std::string nom) const { return service_.inscrire(std::move(nom)); }\n\nprivate:\n    const Inscription& service_;\n};\n\nint main() {\n    Inscription service;\n    Controleur controleur{service};\n    std::cout << controleur.recevoir(\"Lea\") << '\\n';\n}\n",
+        "output": "Inscrit : Lea\n",
+        "when": "Utilisez un contrôleur pour donner un point d’entrée clair aux actions venant de l’interface.",
+        "compare": "GRASP Controller désigne un rôle de réception des actions. MVC précise aussi la séparation avec le modèle et la vue."
+    },
+    {
+        "id": "grasp-low-coupling",
+        "name": "Low Coupling",
+        "family": "grasp",
+        "summary": "Limiter les dépendances qui rendent une modification locale coûteuse pour les autres objets.",
+        "situation": "Dépendre d’un contrat limité",
+        "reading": "Service consulte uniquement Depot::lire(). Le type concret Memoire est choisi au moment de construire le service.",
+        "limit": "Le contrat réduit les détails que le client doit connaître. La référence exige que le dépôt reste vivant.",
+        "code": "#include <iostream>\n\nstruct Depot {\n    virtual ~Depot() = default;\n    virtual int lire() const = 0;\n};\n\nstruct Memoire final : Depot {\n    int lire() const override { return 7; }\n};\n\nclass Service {\npublic:\n    explicit Service(const Depot& depot) : depot_(depot) {}\n    int stock() const { return depot_.lire(); }\n\nprivate:\n    const Depot& depot_;\n};\n\nint main() {\n    Memoire depot;\n    Service service{depot};\n    std::cout << service.stock() << '\\n';\n}\n",
+        "output": "7\n",
+        "when": "Limitez le nombre de détails techniques qu’une classe doit connaître sur les autres.",
+        "compare": "Low Coupling concerne ce qu’une classe doit connaître des autres. High Cohesion concerne ce qui appartient à son propre rôle."
+    },
+    {
+        "id": "grasp-high-cohesion",
+        "name": "High Cohesion",
+        "family": "grasp",
+        "summary": "Rassembler dans un objet des responsabilités qui servent un rôle précis et cohérent.",
+        "situation": "Rassembler les opérations qui vont ensemble",
+        "reading": "CalculPrix réalise le calcul. Affichage produit le texte. Chaque type poursuit une responsabilité précise.",
+        "limit": "Créer deux classes n’est pas un objectif en soi. Cette séparation aide quand calcul et présentation évoluent séparément.",
+        "code": "#include <iostream>\n\nstruct CalculPrix {\n    int total(int quantite, int prix) const { return quantite * prix; }\n};\n\nstruct Affichage {\n    void montrer(int total) const { std::cout << \"Total : \" << total << '\\n'; }\n};\n\nint main() {\n    CalculPrix calcul;\n    Affichage vue;\n    vue.montrer(calcul.total(3, 10));\n}\n",
+        "output": "Total : 30\n",
+        "when": "Rassemblez dans une classe les tâches qui servent un même objectif clairement nommé.",
+        "compare": "High Cohesion garde les responsabilités d’une classe cohérentes. Low Coupling réduit la quantité de détails qu’elle connaît sur ses voisines."
     }
 ];
