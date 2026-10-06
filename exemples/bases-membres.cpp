@@ -2,8 +2,12 @@
 
 class Compteur {
 public:
-    void incrementer() { ++valeur_; }
-    int valeur() const { return valeur_; }
+    void incrementer() {
+        ++valeur_;
+    }
+    int valeur() const {
+        return valeur_;
+    }
 
 private:
     int valeur_ = 0;

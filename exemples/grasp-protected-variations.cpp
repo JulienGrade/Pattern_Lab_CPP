@@ -6,10 +6,12 @@ struct Horloge {
 };
 
 struct HorlogeFixe final : Horloge {
-    int heure() const override { return 9; }
+    int heure() const override {
+        return 9;
+    }
 };
 
-bool ouvert(const Horloge& horloge) {
+bool ouvert(const Horloge &horloge) {
     return horloge.heure() >= 8 && horloge.heure() < 18;
 }
 

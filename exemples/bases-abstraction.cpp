@@ -7,11 +7,13 @@ struct Notification {
 };
 
 struct Mail final : Notification {
-    std::string envoyer() const override { return "Mail envoye"; }
+    std::string envoyer() const override {
+        return "Mail envoye";
+    }
 };
 
 int main() {
     Mail mail;
-    const Notification& notification = mail;
+    const Notification &notification = mail;
     std::cout << notification.envoyer() << '\n';
 }

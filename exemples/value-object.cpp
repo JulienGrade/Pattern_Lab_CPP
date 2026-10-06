@@ -4,11 +4,14 @@
 class Montant {
 public:
     explicit Montant(int centimes) : centimes_(centimes) {
-        if (centimes < 0) throw std::invalid_argument("Montant negatif");
+        if (centimes < 0)
+            throw std::invalid_argument("Montant negatif");
     }
 
-    bool operator==(const Montant&) const = default;
-    int centimes() const { return centimes_; }
+    bool operator==(const Montant &) const = default;
+    int centimes() const {
+        return centimes_;
+    }
 
 private:
     int centimes_;

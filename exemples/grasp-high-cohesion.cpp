@@ -1,11 +1,15 @@
 #include <iostream>
 
 struct CalculPrix {
-    int total(int quantite, int prix) const { return quantite * prix; }
+    int total(int quantite, int prix) const {
+        return quantite * prix;
+    }
 };
 
 struct Affichage {
-    void montrer(int total) const { std::cout << "Total : " << total << '\n'; }
+    void montrer(int total) const {
+        std::cout << "Total : " << total << '\n';
+    }
 };
 
 int main() {

@@ -2,12 +2,14 @@
 #include <string>
 
 struct Journal {
-    void ecrire(const std::string& texte) const { std::cout << texte << '\n'; }
+    void ecrire(const std::string &texte) const {
+        std::cout << texte << '\n';
+    }
 };
 
 class Commande {
 public:
-    void confirmer(const Journal& journal) {
+    void confirmer(const Journal &journal) {
         confirmee_ = true;
         journal.ecrire("Commande confirmee");
     }

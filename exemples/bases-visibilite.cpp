@@ -3,12 +3,15 @@
 class Stock {
 public:
     bool retirer(int quantite) {
-        if (quantite <= 0 || quantite > quantite_) return false;
+        if (quantite <= 0 || quantite > quantite_)
+            return false;
         quantite_ -= quantite;
         return true;
     }
 
-    int quantite() const { return quantite_; }
+    int quantite() const {
+        return quantite_;
+    }
 
 private:
     int quantite_ = 5;

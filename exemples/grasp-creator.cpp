@@ -1,6 +1,6 @@
 #include <iostream>
-#include <vector>
 #include <stdexcept>
+#include <vector>
 
 struct Ligne {
     int quantite;
@@ -9,11 +9,14 @@ struct Ligne {
 class Commande {
 public:
     void ajouter(int quantite) {
-        if (quantite <= 0) throw std::invalid_argument("Quantite invalide");
+        if (quantite <= 0)
+            throw std::invalid_argument("Quantite invalide");
         lignes_.push_back(Ligne{quantite});
     }
 
-    std::size_t taille() const { return lignes_.size(); }
+    std::size_t taille() const {
+        return lignes_.size();
+    }
 
 private:
     std::vector<Ligne> lignes_;

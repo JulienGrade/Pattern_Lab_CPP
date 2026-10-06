@@ -1,7 +1,7 @@
 #include <iostream>
+#include <optional>
 #include <string>
 #include <vector>
-#include <optional>
 
 struct Badge {
     int numero;

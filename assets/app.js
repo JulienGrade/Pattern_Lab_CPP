@@ -165,7 +165,26 @@
             <section class="card uml-section" aria-label="Comprendre la structure en UML">
                 <h3>Comprendre le diagramme de classes</h3>
                 <p>Les noms correspondent au programme C++. Lisez d’abord les classes,
-                    puis les relations expliquées sous chaque vue.</p>
+                    puis les relations expliquées sous le schéma.</p>
+                ${lesson.roles ? `
+                    <div class="relations-wrap">
+                        <table class="relations-table roles-table">
+                            <caption>Du rôle classique à la classe C++</caption>
+                            <thead><tr><th scope="col">Rôle du pattern</th>
+                                <th scope="col">Dans cet exemple</th>
+                                <th scope="col">Responsabilité</th></tr></thead>
+                            <tbody>${lesson.roles.map(role => `
+                                <tr><th scope="row">${escape(role.role)}</th>
+                                    <td>${escape(role.classes)}</td>
+                                    <td>${escape(role.purpose)}</td></tr>`).join("")}</tbody>
+                        </table>
+                    </div>` : ""}
+                ${lesson.referenceUrl ? `
+                    <p class="pattern-reference">Les rôles portent les noms classiques du pattern.
+                        Les références et les pointeurs intelligents précisent leur mise en œuvre en C++.
+                        <a href="${escape(lesson.referenceUrl)}" target="_blank" rel="noopener noreferrer">
+                            Comparer avec la structure de Refactoring Guru</a>.
+                    </p>` : ""}
                 ${lesson.diagrams.map((view, index) => `
                     <section class="uml-view">
                         <div class="diagram-toolbar">

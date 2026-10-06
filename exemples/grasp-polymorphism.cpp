@@ -7,10 +7,12 @@ struct Document {
 };
 
 struct Pdf final : Document {
-    std::string exporter() const override { return "PDF"; }
+    std::string exporter() const override {
+        return "PDF";
+    }
 };
 
-void publier(const Document& document) {
+void publier(const Document &document) {
     std::cout << document.exporter() << '\n';
 }
 

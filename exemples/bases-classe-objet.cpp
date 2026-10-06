@@ -4,8 +4,11 @@
 
 class Collaborateur {
 public:
-    explicit Collaborateur(std::string nom) : nom_(std::move(nom)) {}
-    const std::string& nom() const { return nom_; }
+    explicit Collaborateur(std::string nom) : nom_(std::move(nom)) {
+    }
+    const std::string &nom() const {
+        return nom_;
+    }
 
 private:
     std::string nom_;

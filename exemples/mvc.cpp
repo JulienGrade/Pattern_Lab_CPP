@@ -6,23 +6,25 @@ struct Modele {
 };
 
 struct Vue {
-    void afficher(const Modele& modele) const {
+    void afficher(const Modele &modele) const {
         std::cout << "Stock : " << modele.stock << '\n';
     }
 };
 
 class Controleur {
 public:
-    Controleur(Modele& modele, const Vue& vue) : modele_(modele), vue_(vue) {}
+    Controleur(Modele &modele, const Vue &vue) : modele_(modele), vue_(vue) {
+    }
     void approvisionner(int quantite) {
-        if (quantite <= 0) throw std::invalid_argument("Quantite positive attendue");
+        if (quantite <= 0)
+            throw std::invalid_argument("Quantite positive attendue");
         modele_.stock += quantite;
         vue_.afficher(modele_);
     }
 
 private:
-    Modele& modele_;
-    const Vue& vue_;
+    Modele &modele_;
+    const Vue &vue_;
 };
 
 int main() {

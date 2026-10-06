@@ -4,14 +4,17 @@
 struct Ligne {
     int quantite;
     int prix;
-    int total() const { return quantite * prix; }
+    int total() const {
+        return quantite * prix;
+    }
 };
 
 struct Commande {
     std::vector<Ligne> lignes;
     int total() const {
         int somme = 0;
-        for (const auto& ligne : lignes) somme += ligne.total();
+        for (const auto &ligne : lignes)
+            somme += ligne.total();
         return somme;
     }
 };
