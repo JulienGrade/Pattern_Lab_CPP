@@ -1,24 +1,43 @@
 #include <iostream>
 
-struct Tarif {
+// Strategy : le contrat commun de calcul des frais.
+class Tarif {
+public:
     virtual ~Tarif() = default;
     virtual int frais() const = 0;
 };
-
-struct Standard final : Tarif {
-    int frais() const override { return 5; }
+class Standard final : public Tarif {
+public:
+    int frais() const override {
+        return 5;
+    }
 };
-
-struct Express final : Tarif {
-    int frais() const override { return 12; }
+class Express final : public Tarif {
+public:
+    int frais() const override {
+        return 12;
+    }
 };
+// Context : le panier conserve une stratégie interchangeable.
+class Panier {
+public:
+    explicit Panier(const Tarif &tarif) : tarif_(&tarif) {
+    }
+    void changerTarif(const Tarif &tarif) {
+        tarif_ = &tarif;
+    }
+    int total(int montant) const {
+        return montant + tarif_->frais();
+    }
 
-int total(int montant, const Tarif& tarif) {
-    return montant + tarif.frais();
-}
-
+private:
+    const Tarif *tarif_;
+};
 int main() {
     Standard standard;
     Express express;
-    std::cout << total(100, standard) << ' ' << total(100, express) << '\n';
+    Panier panier{standard};
+    std::cout << panier.total(100) << '\n';
+    panier.changerTarif(express);
+    std::cout << panier.total(100) << '\n';
 }

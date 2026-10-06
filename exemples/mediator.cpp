@@ -2,35 +2,63 @@
 #include <string>
 #include <utility>
 
-struct Vue {
-    std::string texte;
-};
-
 class Mediateur {
 public:
-    explicit Mediateur(Vue& vue) : vue_(vue) {}
+    virtual ~Mediateur() = default;
+    virtual void texteSaisi(const std::string &texte) = 0;
+};
+class Composant {
+public:
+    explicit Composant(Mediateur &mediateur) : mediateur_(mediateur) {
+    }
+    virtual ~Composant() = default;
 
-    void texteSaisi(std::string texte) {
-        vue_.texte = "Recherche : " + texte;
+protected:
+    Mediateur &mediateur_;
+};
+class Champ final : public Composant {
+public:
+    using Composant::Composant;
+    void saisir(const std::string &texte) {
+        mediateur_.texteSaisi(texte);
+    }
+};
+class Vue final : public Composant {
+public:
+    using Composant::Composant;
+    void afficher(std::string texte) {
+        texte_ = std::move(texte);
+    }
+    const std::string &texte() const {
+        return texte_;
     }
 
 private:
-    Vue& vue_;
+    std::string texte_;
 };
-
-class Champ {
+// Concrete Mediator : possède et coordonne ses composants.
+class Dialogue final : public Mediateur {
 public:
-    explicit Champ(Mediateur& mediateur) : mediateur_(mediateur) {}
-    void saisir(std::string texte) { mediateur_.texteSaisi(std::move(texte)); }
+    Dialogue() : champ_(*this), vue_(*this) {
+    }
+    Dialogue(const Dialogue &) = delete;
+    Dialogue &operator=(const Dialogue &) = delete;
+    void rechercher(const std::string &texte) {
+        champ_.saisir(texte);
+    }
+    void texteSaisi(const std::string &texte) override {
+        vue_.afficher("Recherche : " + texte);
+    }
+    const std::string &resultat() const {
+        return vue_.texte();
+    }
 
 private:
-    Mediateur& mediateur_;
+    Champ champ_;
+    Vue vue_;
 };
-
 int main() {
-    Vue vue;
-    Mediateur mediateur{vue};
-    Champ champ{mediateur};
-    champ.saisir("C++");
-    std::cout << vue.texte << '\n';
+    Dialogue dialogue;
+    dialogue.rechercher("C++");
+    std::cout << dialogue.resultat() << '\n';
 }

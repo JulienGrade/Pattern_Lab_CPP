@@ -2,7 +2,8 @@
 
 class Filtre {
 public:
-    explicit Filtre(const Filtre* suivant = nullptr) : suivant_(suivant) {}
+    explicit Filtre(const Filtre *suivant = nullptr) : suivant_(suivant) {
+    }
     virtual ~Filtre() = default;
 
     bool traiter(int valeur) const {
@@ -13,18 +14,22 @@ protected:
     virtual bool accepter(int valeur) const = 0;
 
 private:
-    const Filtre* suivant_;
+    const Filtre *suivant_;
 };
 
 class Positif final : public Filtre {
 public:
     using Filtre::Filtre;
-    bool accepter(int valeur) const override { return valeur > 0; }
+    bool accepter(int valeur) const override {
+        return valeur > 0;
+    }
 };
 
 class Petit final : public Filtre {
 public:
-    bool accepter(int valeur) const override { return valeur < 100; }
+    bool accepter(int valeur) const override {
+        return valeur < 100;
+    }
 };
 
 int main() {

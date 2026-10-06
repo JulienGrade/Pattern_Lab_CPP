@@ -15,10 +15,20 @@ protected:
 };
 
 class ImportCsv final : public Import {
-    void convertir() const override { std::cout << "Conversion CSV\n"; }
+    void convertir() const override {
+        std::cout << "Conversion CSV\n";
+    }
+};
+
+class ImportJson final : public Import {
+    void convertir() const override {
+        std::cout << "Conversion JSON\n";
+    }
 };
 
 int main() {
-    ImportCsv import;
-    import.executer();
+    ImportCsv csv;
+    ImportJson json;
+    csv.executer();
+    json.executer();
 }
