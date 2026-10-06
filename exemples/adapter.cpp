@@ -7,12 +7,15 @@ struct Paiement {
 };
 
 struct AncienTerminal {
-    int reglerEuros(int euros) const { return euros; }
+    int reglerEuros(int euros) const {
+        return euros;
+    }
 };
 
 class Adaptateur final : public Paiement {
 public:
-    explicit Adaptateur(const AncienTerminal& terminal) : terminal_(terminal) {}
+    explicit Adaptateur(const AncienTerminal &terminal) : terminal_(terminal) {
+    }
 
     int payerCentimes(int centimes) const override {
         if (centimes < 0 || centimes % 100 != 0) {
@@ -22,11 +25,12 @@ public:
     }
 
 private:
-    const AncienTerminal& terminal_;
+    const AncienTerminal &terminal_;
 };
 
 int main() {
     AncienTerminal ancien;
     Adaptateur paiement{ancien};
-    std::cout << paiement.payerCentimes(2500) << " euros\n";
+    const Paiement &cible = paiement;
+    std::cout << cible.payerCentimes(2500) << " euros\n";
 }

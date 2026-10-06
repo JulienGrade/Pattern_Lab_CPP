@@ -7,14 +7,19 @@ struct Image {
 };
 
 struct ImageDisque final : Image {
-    ImageDisque() { std::cout << "Chargement\n"; }
-    void afficher() override { std::cout << "Affichage\n"; }
+    ImageDisque() {
+        std::cout << "Chargement\n";
+    }
+    void afficher() override {
+        std::cout << "Affichage\n";
+    }
 };
 
 class ImageProxy final : public Image {
 public:
     void afficher() override {
-        if (!image_) image_ = std::make_unique<ImageDisque>();
+        if (!image_)
+            image_ = std::make_unique<ImageDisque>();
         image_->afficher();
     }
 
@@ -24,6 +29,7 @@ private:
 
 int main() {
     ImageProxy image;
-    image.afficher();
-    image.afficher();
+    Image &service = image;
+    service.afficher();
+    service.afficher();
 }

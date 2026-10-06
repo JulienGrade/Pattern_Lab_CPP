@@ -1,11 +1,15 @@
 #include <iostream>
 
 struct Stock {
-    void reserver() const { std::cout << "Stock reserve\n"; }
+    void reserver() const {
+        std::cout << "Stock reserve\n";
+    }
 };
 
 struct Facturation {
-    void facturer() const { std::cout << "Facture creee\n"; }
+    void facturer() const {
+        std::cout << "Facture creee\n";
+    }
 };
 
 class Vente {
