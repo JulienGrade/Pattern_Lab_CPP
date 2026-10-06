@@ -122,19 +122,6 @@
                     </section>
                 </div>
                 <div>
-                    <section class="card diagram-card">
-                        <div class="diagram-toolbar">
-                            <h3>Diagramme de classes</h3>
-                            <button type="button" id="expand-diagram">Agrandir</button>
-                        </div>
-                        <img class="class-diagram" src="diagrammes/${lesson.id}.svg"
-                             alt="${escape(lesson.diagramDescription)}">
-                        <p class="diagram-legend">Triangle vide · héritage.
-                            Losange plein · composition. Flèche simple · association.
-                            Flèche en pointillés · dépendance.</p>
-                        <p>Les membres utiles à la compréhension de l’exemple sont représentés.
-                            + public, # protégé, − privé. = 0 indique une opération virtuelle pure.</p>
-                    </section>
                     <section class="card code-card" aria-label="Programme C++ complet">
                         <div class="code-toolbar">
                             <span>main.cpp · C++20</span>
@@ -152,6 +139,7 @@
                     </section>
                 </div>
             </div>
+            ${renderDiagrams(lesson)}
             <nav class="actions" aria-label="Parcourir les notions">
                 ${index > 0 ? `<a href="#${lessons[index - 1].id}">Précédent · ${escape(lessons[index - 1].name)}</a>` : ""}
                 ${index < lessons.length - 1 ? `<a href="#${lessons[index + 1].id}">Suivant · ${escape(lessons[index + 1].name)}</a>` : ""}
@@ -160,13 +148,63 @@
         status.textContent = "";
         renderNavigation();
         document.getElementById("copy").addEventListener("click", () => copy(lesson.code));
-        document.getElementById("expand-diagram").addEventListener("click", () => {
-            const diagram = document.getElementById("diagram-large");
-            diagram.src = `diagrammes/${lesson.id}.svg`;
-            diagram.alt = lesson.diagramDescription;
-            document.getElementById("diagram-title").textContent = lesson.name;
-            document.getElementById("diagram-dialog").showModal();
+        document.querySelectorAll(".expand-diagram").forEach(button => {
+            button.addEventListener("click", () => {
+                const view = lesson.diagrams[Number(button.dataset.view)];
+                const diagram = document.getElementById("diagram-large");
+                diagram.src = `diagrammes/${view.file}`;
+                diagram.alt = view.reading;
+                document.getElementById("diagram-title").textContent = `${lesson.name} · ${view.title}`;
+                document.getElementById("diagram-dialog").showModal();
+            });
         });
+    }
+
+    function renderDiagrams(lesson) {
+        return `
+            <section class="card uml-section" aria-label="Comprendre la structure en UML">
+                <h3>Comprendre le diagramme de classes</h3>
+                <p>Les noms correspondent au programme C++. Lisez d’abord les classes,
+                    puis les relations expliquées sous chaque vue.</p>
+                ${lesson.diagrams.map((view, index) => `
+                    <section class="uml-view">
+                        <div class="diagram-toolbar">
+                            <h4>${lesson.diagrams.length > 1 ? `${index + 1}. ` : ""}${escape(view.title)}</h4>
+                            <button type="button" class="expand-diagram" data-view="${index}">
+                                Agrandir la vue
+                            </button>
+                        </div>
+                        <p>${escape(view.reading)}</p>
+                        <div class="diagram-canvas" tabindex="0" role="region"
+                             aria-label="${escape(view.title)} · défilement horizontal si nécessaire">
+                            <img class="class-diagram" src="diagrammes/${view.file}"
+                                 alt="${escape(view.reading)}">
+                        </div>
+                        ${view.relations.length ? `
+                            <div class="relations-wrap">
+                                <table class="relations-table">
+                                    <caption>Lire les relations de cette vue</caption>
+                                    <thead><tr><th scope="col">Départ</th><th scope="col">Relation</th>
+                                        <th scope="col">Arrivée</th><th scope="col">Signification</th></tr></thead>
+                                    <tbody>${view.relations.map(relation => `
+                                        <tr><th scope="row">${escape(relation.source)}</th>
+                                            <td>${escape(relation.type)}</td><td>${escape(relation.target)}</td>
+                                            <td>${escape(relation.detail)}</td></tr>`).join("")}</tbody>
+                                </table>
+                            </div>` : ""}
+                    </section>`).join("")}
+                <details class="uml-key">
+                    <summary>Lire les symboles UML et C++</summary>
+                    <p>+ public · # protégé · − privé. Une opération terminée par = 0 est virtuelle pure.
+                        Une classe abstraite définit un contrat et ne s’instancie pas directement.</p>
+                    <p>Triangle vide : héritage, pointe vers la classe de base.
+                        Losange plein : composition, placé du côté de l’objet propriétaire.
+                        Flèche simple : association vers un objet connu.
+                        Flèche en pointillés : dépendance vers un type utilisé.</p>
+                    <p>Une fonction libre et un type standard sont explicitement indiqués comme tels.
+                        Les membres montrés sont ceux utiles à l’exemple.</p>
+                </details>
+            </section>`;
     }
 
     async function copy(code) {

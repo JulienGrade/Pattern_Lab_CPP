@@ -13,7 +13,15 @@ window.CPP_LESSONS = [
         "compare": "",
         "case": "Un annuaire contient deux collaborateurs avec des noms différents. Le programme doit représenter deux personnes indépendantes avec une même structure.",
         "decision": "Le constructeur est appelé une fois pour chaque objet. nom_ appartient à l’instance consultée.",
-        "diagramDescription": "La classe réunit ses attributs et ses opérations."
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "bases-classe-objet.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": []
+            }
+        ]
     },
     {
         "id": "bases-membres",
@@ -29,7 +37,15 @@ window.CPP_LESSONS = [
         "compare": "",
         "case": "Une interface compte les clics d’un bouton. Elle a besoin de changer le compteur et de lire sa valeur courante.",
         "decision": "L’attribut garde le nombre. Les méthodes définissent les opérations que le client peut demander.",
-        "diagramDescription": "La classe réunit ses attributs et ses opérations."
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "bases-membres.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": []
+            }
+        ]
     },
     {
         "id": "bases-visibilite",
@@ -45,7 +61,15 @@ window.CPP_LESSONS = [
         "compare": "",
         "case": "Un stock de cinq unités ne doit pas accepter un retrait de huit unités, quel que soit l’écran qui le demande.",
         "decision": "La validation et la modification sont réunies dans retirer(). Le champ privé protège l’invariant.",
-        "diagramDescription": "La classe réunit ses attributs et ses opérations."
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "bases-visibilite.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": []
+            }
+        ]
     },
     {
         "id": "bases-abstraction",
@@ -61,7 +85,22 @@ window.CPP_LESSONS = [
         "compare": "",
         "case": "Un service doit envoyer une notification, mais le canal concret peut changer. Il doit utiliser un appel commun.",
         "decision": "La classe abstraite définit le contrat. Le type Mail fournit le comportement de l’envoi.",
-        "diagramDescription": "Mail → Notification (inherit)"
+        "diagramDescription": "Les triangles vides pointent vers la classe de base.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "bases-abstraction.svg",
+                "reading": "Les triangles vides pointent vers la classe de base.",
+                "relations": [
+                    {
+                        "source": "Mail",
+                        "target": "Notification",
+                        "type": "Héritage",
+                        "detail": "Mail hérite de Notification et en fournit une version concrète."
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "bases-relations",
@@ -77,7 +116,28 @@ window.CPP_LESSONS = [
         "compare": "",
         "case": "Une commande se rattache à un client existant et contient ses propres lignes. Ces deux relations ont des durées de vie différentes.",
         "decision": "La commande observe le client par référence et possède ses lignes par valeur.",
-        "diagramDescription": "Commande → Client (1 client) ; Commande → Ligne (0..* lignes)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "bases-relations.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Commande",
+                        "target": "Client",
+                        "type": "Association",
+                        "detail": "Commande conserve un lien vers Client. 1 client"
+                    },
+                    {
+                        "source": "Commande",
+                        "target": "Ligne",
+                        "type": "Composition",
+                        "detail": "Commande possède et conserve Ligne. 0..* lignes"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "bases-multiplicites",
@@ -93,7 +153,22 @@ window.CPP_LESSONS = [
         "compare": "",
         "case": "Une équipe peut avoir un badge ou aucun, et contenir plusieurs membres. Les types C++ doivent exprimer ces possibilités.",
         "decision": "optional garde la présence facultative. vector conserve les éléments multiples.",
-        "diagramDescription": "Equipe → Badge (0..1)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "bases-multiplicites.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Equipe",
+                        "target": "Badge",
+                        "type": "Composition",
+                        "detail": "Equipe possède et conserve Badge. 0..1"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "bases-lire-pattern",
@@ -109,7 +184,35 @@ window.CPP_LESSONS = [
         "compare": "",
         "case": "Une opération doit pouvoir recevoir différents calculs sans réécrire la classe qui les utilise.",
         "decision": "Identifiez le contexte Service, le contrat Politique et la variante Double avant de suivre la délégation.",
-        "diagramDescription": "Service → Politique (observe) ; Double → Politique (inherit)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "bases-lire-pattern.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Double",
+                        "target": "Politique",
+                        "type": "Héritage",
+                        "detail": "Double hérite de Politique et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "bases-lire-pattern-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Service",
+                        "target": "Politique",
+                        "type": "Association",
+                        "detail": "Service conserve un lien vers Politique. observe"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "factory-method",
@@ -125,7 +228,47 @@ window.CPP_LESSONS = [
         "compare": "Factory Method choisit un produit, comme un export. Abstract Factory fournit plusieurs produits prévus pour fonctionner ensemble, comme un annuaire et un canal de notification.",
         "case": "Un outil génère des rapports CSV et pourra demain générer des rapports PDF. La préparation du rapport reste commune, mais chaque type de rapport doit décider quel export créer.",
         "decision": "RapportCsv fournit le produit Csv via creerExport(). Un second rapport pourrait créer un autre Export tout en conservant generer().",
-        "diagramDescription": "RapportCsv → Rapport (inherit) ; Csv → Export (inherit) ; Rapport → Export (crée et utilise) ; RapportCsv → Csv (crée)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "factory-method.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "RapportCsv",
+                        "target": "Rapport",
+                        "type": "Héritage",
+                        "detail": "RapportCsv hérite de Rapport et en fournit une version concrète."
+                    },
+                    {
+                        "source": "Csv",
+                        "target": "Export",
+                        "type": "Héritage",
+                        "detail": "Csv hérite de Export et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "factory-method-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Rapport",
+                        "target": "Export",
+                        "type": "Dépendance",
+                        "detail": "Rapport utilise Export. crée et utilise"
+                    },
+                    {
+                        "source": "RapportCsv",
+                        "target": "Csv",
+                        "type": "Dépendance",
+                        "detail": "RapportCsv utilise Csv. crée"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "abstract-factory",
@@ -141,7 +284,53 @@ window.CPP_LESSONS = [
         "compare": "Factory Method concerne le choix d’un produit. Abstract Factory concerne le choix d’une famille de produits. Builder prépare progressivement un seul objet.",
         "case": "Une application peut fonctionner avec une suite locale ou une suite distante. Chaque suite doit fournir un annuaire et un canal de notification compatibles, sans mélanger les fournisseurs.",
         "decision": "SuiteLocale est le point où choisir la famille de produits. Le client utilise ensuite les contrats Canal et Annuaire.",
-        "diagramDescription": "SuiteLocale → Fabrique (inherit) ; CanalLocal → Canal (inherit) ; AnnuaireLocal → Annuaire (inherit) ; SuiteLocale → CanalLocal (crée) ; SuiteLocale → AnnuaireLocal (crée)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "abstract-factory.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "SuiteLocale",
+                        "target": "Fabrique",
+                        "type": "Héritage",
+                        "detail": "SuiteLocale hérite de Fabrique et en fournit une version concrète."
+                    },
+                    {
+                        "source": "CanalLocal",
+                        "target": "Canal",
+                        "type": "Héritage",
+                        "detail": "CanalLocal hérite de Canal et en fournit une version concrète."
+                    },
+                    {
+                        "source": "AnnuaireLocal",
+                        "target": "Annuaire",
+                        "type": "Héritage",
+                        "detail": "AnnuaireLocal hérite de Annuaire et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "abstract-factory-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "SuiteLocale",
+                        "target": "CanalLocal",
+                        "type": "Dépendance",
+                        "detail": "SuiteLocale utilise CanalLocal. crée"
+                    },
+                    {
+                        "source": "SuiteLocale",
+                        "target": "AnnuaireLocal",
+                        "type": "Dépendance",
+                        "detail": "SuiteLocale utilise AnnuaireLocal. crée"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "builder",
@@ -157,7 +346,22 @@ window.CPP_LESSONS = [
         "compare": "Builder rassemble les morceaux d’un nouvel objet. Prototype part d’un objet déjà configuré et en fait une copie.",
         "case": "Un export d’inventaire se prépare progressivement. Le titre et la présence des données de stock sont choisis à des moments différents avant de produire un rapport.",
         "decision": "Le builder garde les choix de préparation. construire() produit un Rapport autonome, distinct du builder.",
-        "diagramDescription": "RapportBuilder → Rapport (construit)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "builder.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "RapportBuilder",
+                        "target": "Rapport",
+                        "type": "Dépendance",
+                        "detail": "RapportBuilder utilise Rapport. construit"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "prototype",
@@ -173,7 +377,35 @@ window.CPP_LESSONS = [
         "compare": "Builder construit étape après étape. Prototype reproduit un point de départ existant. Une copie doit être distincte de l’original, même si leurs valeurs sont d’abord identiques.",
         "case": "Un éditeur propose de dupliquer un document sélectionné. Le document peut être une note ou un autre type, et le bouton Dupliquer doit préserver son type concret.",
         "decision": "L’appel à cloner() est disponible via Document. Note sait comment copier son propre état, sans imposer au client de tester tous les types.",
-        "diagramDescription": "Note → Document (inherit) ; Note → Note (copie *this)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "prototype.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Note",
+                        "target": "Document",
+                        "type": "Héritage",
+                        "detail": "Note hérite de Document et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "prototype-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Note",
+                        "target": "Note",
+                        "type": "Dépendance",
+                        "detail": "Note utilise Note. copie *this"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "singleton",
@@ -189,7 +421,15 @@ window.CPP_LESSONS = [
         "compare": "Une classe avec des méthodes statiques ne crée pas forcément d’objet. Singleton fournit bien un objet unique. Transmettre un objet partagé peut offrir le même partage sans imposer un accès global.",
         "case": "Un petit programme utilise une configuration unique pendant son exécution. On souhaite centraliser la création de cette instance et interdire sa copie.",
         "decision": "La variable statique locale est construite au premier appel d’instance(). Un accès global doit rester un choix assumé, car il rend les dépendances moins visibles.",
-        "diagramDescription": "Configuration → Configuration (instance statique)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "singleton.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": []
+            }
+        ]
     },
     {
         "id": "adapter",
@@ -205,7 +445,35 @@ window.CPP_LESSONS = [
         "compare": "Adapter rend deux contrats compatibles. Facade propose une entrée simple vers plusieurs services. Proxy garde le même contrat et contrôle l’accès.",
         "case": "La nouvelle application exprime les paiements en centimes. Un ancien terminal reçoit seulement des montants en euros entiers. Le code client doit conserver son contrat en centimes.",
         "decision": "L’adaptateur porte la conversion et la vérification des montants représentables. Le terminal existant continue à recevoir ses appels habituels.",
-        "diagramDescription": "Adaptateur → Paiement (inherit) ; Adaptateur → AncienTerminal (observe)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "adapter.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Adaptateur",
+                        "target": "Paiement",
+                        "type": "Héritage",
+                        "detail": "Adaptateur hérite de Paiement et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "adapter-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Adaptateur",
+                        "target": "AncienTerminal",
+                        "type": "Association",
+                        "detail": "Adaptateur conserve un lien vers AncienTerminal. observe"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "bridge",
@@ -221,7 +489,41 @@ window.CPP_LESSONS = [
         "compare": "Adapter relie après coup des contrats différents. Bridge organise dès la conception deux éléments qui doivent évoluer séparément.",
         "case": "Une supervision envoie des alertes normales ou urgentes par mail ou par un autre canal. On veut ajouter un canal sans recréer chaque catégorie d’alerte.",
         "decision": "L’alerte choisit son contenu, le canal choisit son transport. Leur liaison permet de combiner ces deux variations.",
-        "diagramDescription": "AlerteUrgente → Alerte (inherit) ; Mail → Canal (inherit) ; Alerte → Canal (observe)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "bridge.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "AlerteUrgente",
+                        "target": "Alerte",
+                        "type": "Héritage",
+                        "detail": "AlerteUrgente hérite de Alerte et en fournit une version concrète."
+                    },
+                    {
+                        "source": "Mail",
+                        "target": "Canal",
+                        "type": "Héritage",
+                        "detail": "Mail hérite de Canal et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "bridge-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Alerte",
+                        "target": "Canal",
+                        "type": "Association",
+                        "detail": "Alerte conserve un lien vers Canal. observe"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "composite",
@@ -237,7 +539,41 @@ window.CPP_LESSONS = [
         "compare": "Composite organise plusieurs enfants. Decorator enveloppe généralement un seul objet pour lui ajouter un comportement.",
         "case": "Un catalogue contient des articles et des lots, dont certains contiennent d’autres lots. Le client veut obtenir le prix de n’importe quel élément avec le même appel.",
         "decision": "Un lot additionne ses enfants via Element::prix(). La récursion apparaît naturellement lorsqu’un enfant est aussi un lot.",
-        "diagramDescription": "Article → Element (inherit) ; Lot → Element (inherit) ; Lot → Element (0..* enfants)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "composite.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Article",
+                        "target": "Element",
+                        "type": "Héritage",
+                        "detail": "Article hérite de Element et en fournit une version concrète."
+                    },
+                    {
+                        "source": "Lot",
+                        "target": "Element",
+                        "type": "Héritage",
+                        "detail": "Lot hérite de Element et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "composite-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Lot",
+                        "target": "Element",
+                        "type": "Composition",
+                        "detail": "Lot possède et conserve Element. 0..* enfants"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "decorator",
@@ -253,7 +589,41 @@ window.CPP_LESSONS = [
         "compare": "Decorator ajoute un comportement. Proxy autorise, bloque ou retarde l’accès. Adapter change le contrat utilisé pour appeler un service.",
         "case": "Un envoi de mail doit parfois être journalisé. On veut activer cette option pour certains canaux et pouvoir ajouter plus tard d’autres enrichissements.",
         "decision": "Journalise respecte Canal et enveloppe un autre Canal. L’appelant peut utiliser l’objet enrichi à la place du canal simple.",
-        "diagramDescription": "Mail → Canal (inherit) ; Journalise → Canal (inherit) ; Journalise → Canal (enveloppe)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "decorator.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Mail",
+                        "target": "Canal",
+                        "type": "Héritage",
+                        "detail": "Mail hérite de Canal et en fournit une version concrète."
+                    },
+                    {
+                        "source": "Journalise",
+                        "target": "Canal",
+                        "type": "Héritage",
+                        "detail": "Journalise hérite de Canal et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "decorator-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Journalise",
+                        "target": "Canal",
+                        "type": "Association",
+                        "detail": "Journalise conserve un lien vers Canal. enveloppe"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "facade",
@@ -269,7 +639,28 @@ window.CPP_LESSONS = [
         "compare": "Facade simplifie l’utilisation de plusieurs services. Mediator organise les échanges entre plusieurs objets. Une façade ne remplace pas toute la logique métier par une seule énorme classe.",
         "case": "Confirmer une vente demande de réserver le stock puis de déclencher la facturation. Plusieurs écrans ont besoin de cette même séquence.",
         "decision": "Vente présente une opération simple qui coordonne les deux composants. Elle constitue le point d’entrée commun de cette action.",
-        "diagramDescription": "Vente → Stock (1) ; Vente → Facturation (1)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "facade.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Vente",
+                        "target": "Stock",
+                        "type": "Composition",
+                        "detail": "Vente possède et conserve Stock. 1"
+                    },
+                    {
+                        "source": "Vente",
+                        "target": "Facturation",
+                        "type": "Composition",
+                        "detail": "Vente possède et conserve Facturation. 1"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "flyweight",
@@ -285,7 +676,28 @@ window.CPP_LESSONS = [
         "compare": "Singleton impose une seule instance pour une classe. Flyweight permet plusieurs instances partagées, une par valeur ou clé du catalogue.",
         "case": "Un document contient des milliers de lettres qui utilisent souvent la même police. Répéter la description de la police dans chaque lettre consommerait inutilement de la mémoire.",
         "decision": "La position et le caractère restent propres à la lettre. La description immuable du style est partagée et récupérée dans un cache.",
-        "diagramDescription": "Styles → Style (partage et conserve) ; Lettre → Style (partage 1)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "flyweight.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Styles",
+                        "target": "Style",
+                        "type": "Association",
+                        "detail": "Styles conserve un lien vers Style. partage et conserve"
+                    },
+                    {
+                        "source": "Lettre",
+                        "target": "Style",
+                        "type": "Association",
+                        "detail": "Lettre conserve un lien vers Style. partage 1"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "proxy",
@@ -301,7 +713,41 @@ window.CPP_LESSONS = [
         "compare": "Proxy contrôle l’accès à un service. Decorator enrichit ce que fait le service. Adapter permet de l’appeler avec un autre contrat.",
         "case": "Une galerie référence des images volumineuses, mais l’utilisateur n’en ouvre qu’une partie. Charger toutes les images dès la création des objets serait coûteux.",
         "decision": "ImageProxy représente une image avant son chargement. Il crée le véritable objet au premier affichage, puis le réutilise.",
-        "diagramDescription": "ImageProxy → Image (inherit) ; ImageDisque → Image (inherit) ; ImageProxy → ImageDisque (0..1)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "proxy.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "ImageProxy",
+                        "target": "Image",
+                        "type": "Héritage",
+                        "detail": "ImageProxy hérite de Image et en fournit une version concrète."
+                    },
+                    {
+                        "source": "ImageDisque",
+                        "target": "Image",
+                        "type": "Héritage",
+                        "detail": "ImageDisque hérite de Image et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "proxy-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "ImageProxy",
+                        "target": "ImageDisque",
+                        "type": "Composition",
+                        "detail": "ImageProxy possède et conserve ImageDisque. 0..1"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "chain",
@@ -317,7 +763,41 @@ window.CPP_LESSONS = [
         "compare": "Chain of Responsibility fait passer une demande dans plusieurs contrôles. Strategy choisit une seule manière d’effectuer un travail.",
         "case": "Une valeur entrante doit être positive puis inférieure à une limite. D’autres contrôles pourront être insérés sans réécrire chaque filtre.",
         "decision": "Chaque filtre accepte ou interrompt la demande. Le lien vers le suivant permet de composer une chaîne de validations.",
-        "diagramDescription": "Positif → Filtre (inherit) ; Petit → Filtre (inherit) ; Filtre → Filtre (suivant 0..1)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "chain.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Positif",
+                        "target": "Filtre",
+                        "type": "Héritage",
+                        "detail": "Positif hérite de Filtre et en fournit une version concrète."
+                    },
+                    {
+                        "source": "Petit",
+                        "target": "Filtre",
+                        "type": "Héritage",
+                        "detail": "Petit hérite de Filtre et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "chain-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Filtre",
+                        "target": "Filtre",
+                        "type": "Association",
+                        "detail": "Filtre conserve un lien vers Filtre. suivant 0..1"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "command",
@@ -333,7 +813,35 @@ window.CPP_LESSONS = [
         "compare": "Command représente « quoi faire ». Strategy représente « comment faire le même travail ». Une file de commandes n’est pas nécessairement une file persistante.",
         "case": "Une interface doit exécuter une action maintenant ou plus tard, puis permettre de l’annuler. Le composant qui déclenche l’action doit manipuler un contrat uniforme.",
         "decision": "Incrementer réunit l’action, son récepteur et l’opération inverse. L’objet commande peut ensuite être stocké dans un historique.",
-        "diagramDescription": "Incrementer → Commande (inherit) ; Incrementer → Compteur (récepteur)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "command.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Incrementer",
+                        "target": "Commande",
+                        "type": "Héritage",
+                        "detail": "Incrementer hérite de Commande et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "command-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Incrementer",
+                        "target": "Compteur",
+                        "type": "Association",
+                        "detail": "Incrementer conserve un lien vers Compteur. récepteur"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "interpreter",
@@ -349,7 +857,41 @@ window.CPP_LESSONS = [
         "compare": "Composite décrit la forme d’un arbre. Interpreter utilise un arbre pour donner un sens à une expression et calculer son résultat.",
         "case": "Une petite règle métier représente une expression composée de nombres et d’additions. On veut combiner ces règles sous forme d’arbre et les évaluer.",
         "decision": "Nombre et Somme implémentent le même contrat. Somme délègue l’évaluation à ses enfants puis combine leurs résultats.",
-        "diagramDescription": "Nombre → Expression (inherit) ; Somme → Expression (inherit) ; Somme → Expression (2 opérandes)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "interpreter.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Nombre",
+                        "target": "Expression",
+                        "type": "Héritage",
+                        "detail": "Nombre hérite de Expression et en fournit une version concrète."
+                    },
+                    {
+                        "source": "Somme",
+                        "target": "Expression",
+                        "type": "Héritage",
+                        "detail": "Somme hérite de Expression et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "interpreter-relations.svg",
+                "reading": "Somme garde deux références vers des Expression : une à gauche et une à droite. Elle appelle evaluer() sur chacune, puis additionne les résultats. Elle ne possède pas ces objets.",
+                "relations": [
+                    {
+                        "source": "Somme",
+                        "target": "Expression",
+                        "type": "Association",
+                        "detail": "Somme conserve un lien vers Expression. 2 opérandes"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "iterator",
@@ -365,7 +907,22 @@ window.CPP_LESSONS = [
         "compare": "Iterator décrit comment parcourir une collection. Composite décrit comment organiser des éléments et des groupes. Une structure Composite peut être parcourue avec un Iterator.",
         "case": "Une collection interne doit pouvoir être parcourue par les utilisateurs de la classe, tout en gardant son conteneur comme détail privé.",
         "decision": "begin() et end() exposent le protocole de parcours reconnu par les boucles C++. L’exemple réutilise les itérateurs du vector.",
-        "diagramDescription": "Collection → vector<int> (stockage)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "iterator.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Collection",
+                        "target": "vector<int>",
+                        "type": "Composition",
+                        "detail": "Collection possède et conserve vector<int>. stockage"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "mediator",
@@ -381,7 +938,28 @@ window.CPP_LESSONS = [
         "compare": "Mediator décide comment plusieurs objets collaborent. Observer diffuse un événement à des abonnés sans centraliser toutes leurs décisions.",
         "case": "Dans un formulaire, saisir un texte doit mettre à jour une zone de résultat. Si chaque champ connaît directement toutes les vues, les dépendances se multiplient.",
         "decision": "Le champ signale l’événement au médiateur. Le médiateur sait quelle vue actualiser et peut coordonner d’autres composants.",
-        "diagramDescription": "Champ → Mediateur (signale) ; Mediateur → Vue (actualise)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "mediator.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Champ",
+                        "target": "Mediateur",
+                        "type": "Association",
+                        "detail": "Champ conserve un lien vers Mediateur. signale"
+                    },
+                    {
+                        "source": "Mediateur",
+                        "target": "Vue",
+                        "type": "Association",
+                        "detail": "Mediateur conserve un lien vers Vue. actualise"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "memento",
@@ -397,7 +975,22 @@ window.CPP_LESSONS = [
         "compare": "Memento conserve un état. Command conserve une action. Revenir à un état et exécuter une action inverse sont deux manières différentes de proposer Annuler.",
         "case": "Un éditeur doit revenir au texte présent avant une modification. Le composant qui gère l’historique veut conserver une sauvegarde et la rendre à l’éditeur.",
         "decision": "Le memento capture l’état par valeur. restaurer() relit cette sauvegarde pour retrouver la version précédente.",
-        "diagramDescription": "Editeur → Sauvegarde (crée et restaure)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "memento.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Editeur",
+                        "target": "Sauvegarde",
+                        "type": "Dépendance",
+                        "detail": "Editeur utilise Sauvegarde. crée et restaure"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "observer",
@@ -413,7 +1006,22 @@ window.CPP_LESSONS = [
         "compare": "Observer diffuse une information. Mediator coordonne une collaboration. Un abonné choisit quoi faire de l’événement reçu.",
         "case": "Lorsque le stock change, une vue et un système d’alerte doivent pouvoir être prévenus. Le stock doit pouvoir fonctionner quel que soit le nombre d’abonnés.",
         "decision": "Stock déclenche les callbacks enregistrés après la modification. La lambda est ici un abonné qui affiche la nouvelle quantité.",
-        "diagramDescription": "Stock → Callback (0..* abonnés)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "observer.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Stock",
+                        "target": "Callback",
+                        "type": "Composition",
+                        "detail": "Stock possède et conserve Callback. 0..* abonnés"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "state",
@@ -429,7 +1037,47 @@ window.CPP_LESSONS = [
         "compare": "State exprime la situation actuelle d’un objet et les actions qu’elle permet. Strategy choisit une manière de calculer, sans représenter un cycle de vie.",
         "case": "Une commande débute en brouillon et passe ensuite à l’état payé. Les transitions autorisées dépendent de son état courant.",
         "decision": "Commande délègue la transition à Etat. Le brouillon crée l’état suivant, tandis que Payee refuse de continuer.",
-        "diagramDescription": "Commande → Etat (1 état courant) ; Brouillon → Etat (inherit) ; Payee → Etat (inherit) ; Brouillon → Payee (transition)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "state.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Brouillon",
+                        "target": "Etat",
+                        "type": "Héritage",
+                        "detail": "Brouillon hérite de Etat et en fournit une version concrète."
+                    },
+                    {
+                        "source": "Payee",
+                        "target": "Etat",
+                        "type": "Héritage",
+                        "detail": "Payee hérite de Etat et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "state-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Commande",
+                        "target": "Etat",
+                        "type": "Composition",
+                        "detail": "Commande possède et conserve Etat. 1 état courant"
+                    },
+                    {
+                        "source": "Brouillon",
+                        "target": "Payee",
+                        "type": "Dépendance",
+                        "detail": "Brouillon utilise Payee. transition"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "strategy",
@@ -445,7 +1093,41 @@ window.CPP_LESSONS = [
         "compare": "Strategy choisit une manière de travailler. State change le comportement en fonction d’un état métier. Template Method conserve un déroulement et laisse des sous-classes préciser certaines étapes.",
         "case": "Le même panier peut utiliser une livraison standard ou express. Le total doit intégrer les frais choisis sans connaître la formule de chaque tarif.",
         "decision": "La fonction total() reçoit Tarif par référence. Les deux objets concrets rendent le calcul interchangeable.",
-        "diagramDescription": "Standard → Tarif (inherit) ; Express → Tarif (inherit) ; total() → Tarif (utilise)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "strategy.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Standard",
+                        "target": "Tarif",
+                        "type": "Héritage",
+                        "detail": "Standard hérite de Tarif et en fournit une version concrète."
+                    },
+                    {
+                        "source": "Express",
+                        "target": "Tarif",
+                        "type": "Héritage",
+                        "detail": "Express hérite de Tarif et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "strategy-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "total()",
+                        "target": "Tarif",
+                        "type": "Dépendance",
+                        "detail": "total() utilise Tarif. utilise"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "template-method",
@@ -461,7 +1143,22 @@ window.CPP_LESSONS = [
         "compare": "Template Method repose sur l’héritage. Strategy confie un travail à un autre objet. Strategy permet plus facilement de changer ce choix sur un objet déjà créé.",
         "case": "Plusieurs imports suivent les étapes lecture, conversion et validation. Seule la conversion varie selon le format de fichier.",
         "decision": "Import fixe la séquence dans executer(). La sous-classe Csv personnalise le point d’extension convertir().",
-        "diagramDescription": "ImportCsv → Import (inherit)"
+        "diagramDescription": "Les triangles vides pointent vers la classe de base.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "template-method.svg",
+                "reading": "Les triangles vides pointent vers la classe de base.",
+                "relations": [
+                    {
+                        "source": "ImportCsv",
+                        "target": "Import",
+                        "type": "Héritage",
+                        "detail": "ImportCsv hérite de Import et en fournit une version concrète."
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "visitor",
@@ -477,7 +1174,59 @@ window.CPP_LESSONS = [
         "compare": "Ajouter un nouveau visiteur permet d’ajouter une opération sans modifier chaque demande. Ajouter une nouvelle classe de demande demande, au contraire, de mettre les visiteurs à jour.",
         "case": "Une arborescence stable contient des fichiers et des dossiers. On veut ajouter un inventaire, puis d’autres analyses, sans concentrer ces traitements dans les éléments.",
         "decision": "Le visiteur reçoit chaque type concret par surcharge. L’appel virtuel accepter() transmet le bon type à visiter().",
-        "diagramDescription": "Fichier → Element (inherit) ; Dossier → Element (inherit) ; Inventaire → Visiteur (inherit) ; Element → Visiteur (accepte) ; Visiteur → Fichier (visite) ; Visiteur → Dossier (visite)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "visitor.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Fichier",
+                        "target": "Element",
+                        "type": "Héritage",
+                        "detail": "Fichier hérite de Element et en fournit une version concrète."
+                    },
+                    {
+                        "source": "Dossier",
+                        "target": "Element",
+                        "type": "Héritage",
+                        "detail": "Dossier hérite de Element et en fournit une version concrète."
+                    },
+                    {
+                        "source": "Inventaire",
+                        "target": "Visiteur",
+                        "type": "Héritage",
+                        "detail": "Inventaire hérite de Visiteur et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "visitor-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Element",
+                        "target": "Visiteur",
+                        "type": "Dépendance",
+                        "detail": "Element utilise Visiteur. accepte"
+                    },
+                    {
+                        "source": "Visiteur",
+                        "target": "Fichier",
+                        "type": "Dépendance",
+                        "detail": "Visiteur utilise Fichier. visite"
+                    },
+                    {
+                        "source": "Visiteur",
+                        "target": "Dossier",
+                        "type": "Dépendance",
+                        "detail": "Visiteur utilise Dossier. visite"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "mvc",
@@ -493,7 +1242,34 @@ window.CPP_LESSONS = [
         "compare": "MVC organise les responsabilités du modèle, de la vue et du contrôleur. Strategy peut être utilisé à l’intérieur du modèle. MVC est distinct des 23 patterns classiques.",
         "case": "Une interface de stock doit pouvoir changer sa présentation sans mélanger la lecture des données, l’intention utilisateur et l’écriture de la vue.",
         "decision": "Le contrôleur reçoit l’approvisionnement, modifie le modèle puis demande à la vue de le présenter.",
-        "diagramDescription": "Controleur → Modele (modifie) ; Controleur → Vue (déclenche) ; Vue → Modele (lit)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "mvc.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Controleur",
+                        "target": "Modele",
+                        "type": "Association",
+                        "detail": "Controleur conserve un lien vers Modele. modifie"
+                    },
+                    {
+                        "source": "Controleur",
+                        "target": "Vue",
+                        "type": "Association",
+                        "detail": "Controleur conserve un lien vers Vue. déclenche"
+                    },
+                    {
+                        "source": "Vue",
+                        "target": "Modele",
+                        "type": "Dépendance",
+                        "detail": "Vue utilise Modele. lit"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "value-object",
@@ -509,7 +1285,15 @@ window.CPP_LESSONS = [
         "compare": "Une entité conserve son identité même si ses propriétés changent, comme un dossier identifié par son numéro. Un Value Object est défini par ses valeurs, comme une quantité.",
         "case": "Une facture utilise des montants. Deux montants de 500 centimes doivent être égaux, quelle que soit leur origine, et une valeur négative doit être refusée.",
         "decision": "Montant réunit la valeur, sa validation et sa comparaison. L’égalité porte sur les centimes plutôt que sur une identité technique.",
-        "diagramDescription": "La classe réunit ses attributs et ses opérations."
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "value-object.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": []
+            }
+        ]
     },
     {
         "id": "grasp-expert",
@@ -525,7 +1309,22 @@ window.CPP_LESSONS = [
         "compare": "Information Expert aide à choisir où placer une règle. High Cohesion aide à vérifier que l’objet garde un rôle clair.",
         "case": "Pour calculer une commande, il faut multiplier chaque quantité par son prix, puis additionner les lignes. On cherche où placer ces calculs.",
         "decision": "Ligne dispose des données de son total. Commande possède les lignes et réalise la somme. Chacune est experte de l’information qu’elle connaît.",
-        "diagramDescription": "Commande → Ligne (0..*)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "grasp-expert.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Commande",
+                        "target": "Ligne",
+                        "type": "Composition",
+                        "detail": "Commande possède et conserve Ligne. 0..*"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "grasp-creator",
@@ -541,7 +1340,35 @@ window.CPP_LESSONS = [
         "compare": "Creator est un principe de répartition des responsabilités. Builder est une solution possible quand cette création demande plusieurs étapes.",
         "case": "Une commande crée et conserve ses lignes. Les quantités doivent être vérifiées au moment de l’ajout.",
         "decision": "La responsabilité de création revient à Commande, qui connaît la collection et garantit la validation avant l’insertion.",
-        "diagramDescription": "Commande → Ligne (0..* lignes) ; Commande → Ligne (crée)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Possession des lignes",
+                "file": "grasp-creator.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Commande",
+                        "target": "Ligne",
+                        "type": "Composition",
+                        "detail": "Commande possède et conserve Ligne. 0..* lignes"
+                    }
+                ]
+            },
+            {
+                "title": "Création des lignes",
+                "file": "grasp-creator-creation.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Commande",
+                        "target": "Ligne",
+                        "type": "Dépendance",
+                        "detail": "Commande utilise Ligne. crée"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "grasp-controller",
@@ -557,7 +1384,22 @@ window.CPP_LESSONS = [
         "compare": "GRASP Controller désigne un rôle de réception des actions. MVC précise aussi la séparation avec le modèle et la vue.",
         "case": "Une action de l’interface inscrit un utilisateur. Le traitement de l’intention doit rester identifiable si l’écran change.",
         "decision": "Controleur transmet l’inscription au service. La règle du nom obligatoire reste dans Inscription.",
-        "diagramDescription": "Controleur → Inscription (délègue)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "grasp-controller.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Controleur",
+                        "target": "Inscription",
+                        "type": "Association",
+                        "detail": "Controleur conserve un lien vers Inscription. délègue"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "grasp-low-coupling",
@@ -573,7 +1415,35 @@ window.CPP_LESSONS = [
         "compare": "Low Coupling concerne ce qu’une classe doit connaître des autres. High Cohesion concerne ce qui appartient à son propre rôle.",
         "case": "Un service doit consulter le stock tantôt en mémoire, tantôt dans un stockage externe. Son code ne devrait pas connaître le détail du stockage.",
         "decision": "Le contrat Depot ne propose que lire(). Le client reçoit la dépendance à la construction.",
-        "diagramDescription": "Service → Depot (observe) ; Memoire → Depot (inherit)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "grasp-low-coupling.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Memoire",
+                        "target": "Depot",
+                        "type": "Héritage",
+                        "detail": "Memoire hérite de Depot et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "grasp-low-coupling-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "Service",
+                        "target": "Depot",
+                        "type": "Association",
+                        "detail": "Service conserve un lien vers Depot. observe"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "grasp-high-cohesion",
@@ -589,7 +1459,15 @@ window.CPP_LESSONS = [
         "compare": "High Cohesion garde les responsabilités d’une classe cohérentes. Low Coupling réduit la quantité de détails qu’elle connaît sur ses voisines.",
         "case": "Le calcul de prix évolue selon les règles commerciales, tandis que la présentation change avec les besoins de l’interface.",
         "decision": "CalculPrix regroupe le calcul et Affichage regroupe la restitution. Chacun a une raison claire de changer.",
-        "diagramDescription": "La classe réunit ses attributs et ses opérations."
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "grasp-high-cohesion.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": []
+            }
+        ]
     },
     {
         "id": "grasp-polymorphism",
@@ -605,7 +1483,35 @@ window.CPP_LESSONS = [
         "compare": "Polymorphism est le principe qui permet cet appel commun. Strategy organise concrètement le choix entre des comportements interchangeables.",
         "case": "Une publication doit accepter différents types de documents. Chaque format sait comment exporter son contenu.",
         "decision": "La variation est confiée aux types de Document. publier() travaille sur un contrat uniforme.",
-        "diagramDescription": "Pdf → Document (inherit) ; publier() → Document (utilise)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "grasp-polymorphism.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "Pdf",
+                        "target": "Document",
+                        "type": "Héritage",
+                        "detail": "Pdf hérite de Document et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "grasp-polymorphism-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "publier()",
+                        "target": "Document",
+                        "type": "Dépendance",
+                        "detail": "publier() utilise Document. utilise"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "grasp-pure-fabrication",
@@ -621,7 +1527,22 @@ window.CPP_LESSONS = [
         "compare": "Information Expert recherche un objet métier déjà bien placé. Pure Fabrication autorise un objet de conception supplémentaire quand aucun objet métier ne convient.",
         "case": "Plusieurs opérations métier doivent produire des traces. Ajouter le code technique de journalisation à chacune compliquerait leurs responsabilités.",
         "decision": "Journal porte cette responsabilité technique. La commande fournit seulement le message de confirmation.",
-        "diagramDescription": "Commande → Journal (utilise)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "grasp-pure-fabrication.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Commande",
+                        "target": "Journal",
+                        "type": "Dépendance",
+                        "detail": "Commande utilise Journal. utilise"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "grasp-indirection",
@@ -637,7 +1558,22 @@ window.CPP_LESSONS = [
         "compare": "Indirection décrit l’idée d’interposer un objet. Adapter, Facade et Mediator sont des façons différentes de le faire selon le problème.",
         "case": "Les composants métier publient des notifications. Un point de passage commun doit décider comment contacter le service de mail.",
         "decision": "Notifications intervient entre le client et le service concret. La coordination peut évoluer dans cet intermédiaire.",
-        "diagramDescription": "Notifications → ServiceMail (délègue)"
+        "diagramDescription": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+        "diagrams": [
+            {
+                "title": "Structure des classes",
+                "file": "grasp-indirection.svg",
+                "reading": "Les attributs sont au milieu de chaque classe et les opérations dans le compartiment inférieur.",
+                "relations": [
+                    {
+                        "source": "Notifications",
+                        "target": "ServiceMail",
+                        "type": "Association",
+                        "detail": "Notifications conserve un lien vers ServiceMail. délègue"
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": "grasp-protected-variations",
@@ -653,6 +1589,34 @@ window.CPP_LESSONS = [
         "compare": "Protected Variations désigne ce que vous cherchez à protéger. Low Coupling décrit un effet recherché : moins de classes à modifier lorsque cette partie change.",
         "case": "Une règle d’ouverture dépend de l’heure. Les tests doivent pouvoir contrôler cette heure sans attendre un moment précis de la journée.",
         "decision": "Le contrat Horloge protège la variation du temps fourni. HorlogeFixe rend le test reproductible.",
-        "diagramDescription": "HorlogeFixe → Horloge (inherit) ; ouvert() → Horloge (consulte)"
+        "diagramDescription": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+        "diagrams": [
+            {
+                "title": "Classes et héritage",
+                "file": "grasp-protected-variations.svg",
+                "reading": "Le contrat commun est placé en haut. Les triangles vides pointent vers ce contrat.",
+                "relations": [
+                    {
+                        "source": "HorlogeFixe",
+                        "target": "Horloge",
+                        "type": "Héritage",
+                        "detail": "HorlogeFixe hérite de Horloge et en fournit une version concrète."
+                    }
+                ]
+            },
+            {
+                "title": "Liens entre les objets",
+                "file": "grasp-protected-variations-relations.svg",
+                "reading": "Cette seconde vue montre les objets utilisés ou possédés. Les relations d’héritage sont dans la première vue.",
+                "relations": [
+                    {
+                        "source": "ouvert()",
+                        "target": "Horloge",
+                        "type": "Dépendance",
+                        "detail": "ouvert() utilise Horloge. consulte"
+                    }
+                ]
+            }
+        ]
     }
 ];
