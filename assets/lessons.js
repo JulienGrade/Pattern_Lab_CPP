@@ -10,7 +10,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <utility>\n\nclass Collaborateur {\npublic:\n    explicit Collaborateur(std::string nom) : nom_(std::move(nom)) {}\n    const std::string& nom() const { return nom_; }\n\nprivate:\n    std::string nom_;\n};\n\nint main() {\n    Collaborateur lea{\"Lea\"};\n    Collaborateur karim{\"Karim\"};\n    std::cout << lea.nom() << ' ' << karim.nom() << '\\n';\n}\n",
         "output": "Lea Karim\n",
         "when": "",
-        "compare": ""
+        "compare": "",
+        "case": "Un annuaire contient deux collaborateurs avec des noms différents. Le programme doit représenter deux personnes indépendantes avec une même structure.",
+        "decision": "Le constructeur est appelé une fois pour chaque objet. nom_ appartient à l’instance consultée.",
+        "diagramDescription": "La classe réunit ses attributs et ses opérations."
     },
     {
         "id": "bases-membres",
@@ -23,7 +26,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nclass Compteur {\npublic:\n    void incrementer() { ++valeur_; }\n    int valeur() const { return valeur_; }\n\nprivate:\n    int valeur_ = 0;\n};\n\nint main() {\n    Compteur compteur;\n    compteur.incrementer();\n    std::cout << compteur.valeur() << '\\n';\n}\n",
         "output": "1\n",
         "when": "",
-        "compare": ""
+        "compare": "",
+        "case": "Une interface compte les clics d’un bouton. Elle a besoin de changer le compteur et de lire sa valeur courante.",
+        "decision": "L’attribut garde le nombre. Les méthodes définissent les opérations que le client peut demander.",
+        "diagramDescription": "La classe réunit ses attributs et ses opérations."
     },
     {
         "id": "bases-visibilite",
@@ -36,7 +42,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nclass Stock {\npublic:\n    bool retirer(int quantite) {\n        if (quantite <= 0 || quantite > quantite_) return false;\n        quantite_ -= quantite;\n        return true;\n    }\n\n    int quantite() const { return quantite_; }\n\nprivate:\n    int quantite_ = 5;\n};\n\nint main() {\n    Stock stock;\n    std::cout << std::boolalpha << stock.retirer(8) << ' ' << stock.quantite() << '\\n';\n}\n",
         "output": "false 5\n",
         "when": "",
-        "compare": ""
+        "compare": "",
+        "case": "Un stock de cinq unités ne doit pas accepter un retrait de huit unités, quel que soit l’écran qui le demande.",
+        "decision": "La validation et la modification sont réunies dans retirer(). Le champ privé protège l’invariant.",
+        "diagramDescription": "La classe réunit ses attributs et ses opérations."
     },
     {
         "id": "bases-abstraction",
@@ -49,7 +58,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n\nstruct Notification {\n    virtual ~Notification() = default;\n    virtual std::string envoyer() const = 0;\n};\n\nstruct Mail final : Notification {\n    std::string envoyer() const override { return \"Mail envoye\"; }\n};\n\nint main() {\n    Mail mail;\n    const Notification& notification = mail;\n    std::cout << notification.envoyer() << '\\n';\n}\n",
         "output": "Mail envoye\n",
         "when": "",
-        "compare": ""
+        "compare": "",
+        "case": "Un service doit envoyer une notification, mais le canal concret peut changer. Il doit utiliser un appel commun.",
+        "decision": "La classe abstraite définit le contrat. Le type Mail fournit le comportement de l’envoi.",
+        "diagramDescription": "Mail → Notification (inherit)"
     },
     {
         "id": "bases-relations",
@@ -62,7 +74,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Client {\n    std::string nom;\n};\n\nstruct Ligne {\n    int prix;\n};\n\nclass Commande {\npublic:\n    explicit Commande(const Client& client) : client_(client) {}\n    void ajouter(int prix) { lignes_.push_back(Ligne{prix}); }\n    void afficher() const {\n        std::cout << client_.nom << \" : \" << lignes_.size() << \" ligne\\n\";\n    }\n\nprivate:\n    const Client& client_;\n    std::vector<Ligne> lignes_;\n};\n\nint main() {\n    Client client{\"Lea\"};\n    Commande commande{client};\n    commande.ajouter(10);\n    commande.afficher();\n}\n",
         "output": "Lea : 1 ligne\n",
         "when": "",
-        "compare": ""
+        "compare": "",
+        "case": "Une commande se rattache à un client existant et contient ses propres lignes. Ces deux relations ont des durées de vie différentes.",
+        "decision": "La commande observe le client par référence et possède ses lignes par valeur.",
+        "diagramDescription": "Commande → Client (1 client) ; Commande → Ligne (0..* lignes)"
     },
     {
         "id": "bases-multiplicites",
@@ -75,7 +90,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <optional>\n\nstruct Badge {\n    int numero;\n};\n\nstruct Equipe {\n    std::optional<Badge> badge;\n    std::vector<std::string> membres;\n};\n\nint main() {\n    Equipe equipe{std::nullopt, {\"Lea\", \"Karim\"}};\n    std::cout << equipe.badge.has_value() << ' ' << equipe.membres.size() << '\\n';\n}\n",
         "output": "0 2\n",
         "when": "",
-        "compare": ""
+        "compare": "",
+        "case": "Une équipe peut avoir un badge ou aucun, et contenir plusieurs membres. Les types C++ doivent exprimer ces possibilités.",
+        "decision": "optional garde la présence facultative. vector conserve les éléments multiples.",
+        "diagramDescription": "Equipe → Badge (0..1)"
     },
     {
         "id": "bases-lire-pattern",
@@ -88,7 +106,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nstruct Politique {\n    virtual ~Politique() = default;\n    virtual int calculer(int montant) const = 0;\n};\n\nstruct Double final : Politique {\n    int calculer(int montant) const override { return montant * 2; }\n};\n\nclass Service {\npublic:\n    explicit Service(const Politique& politique) : politique_(politique) {}\n    int executer(int montant) const { return politique_.calculer(montant); }\n\nprivate:\n    const Politique& politique_;\n};\n\nint main() {\n    Double politique;\n    Service service{politique};\n    std::cout << service.executer(5) << '\\n';\n}\n",
         "output": "10\n",
         "when": "",
-        "compare": ""
+        "compare": "",
+        "case": "Une opération doit pouvoir recevoir différents calculs sans réécrire la classe qui les utilise.",
+        "decision": "Identifiez le contexte Service, le contrat Politique et la variante Double avant de suivre la délégation.",
+        "diagramDescription": "Service → Politique (observe) ; Double → Politique (inherit)"
     },
     {
         "id": "factory-method",
@@ -101,7 +122,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <memory>\n\nstruct Export {\n    virtual ~Export() = default;\n    virtual std::string texte() const = 0;\n};\n\nstruct Csv final : Export {\n    std::string texte() const override { return \"Export CSV\"; }\n};\n\nclass Rapport {\npublic:\n    virtual ~Rapport() = default;\n    std::string generer() const { return creerExport()->texte(); }\n\nprotected:\n    virtual std::unique_ptr<Export> creerExport() const = 0;\n};\n\nclass RapportCsv final : public Rapport {\n    std::unique_ptr<Export> creerExport() const override {\n        return std::make_unique<Csv>();\n    }\n};\n\nint main() {\n    RapportCsv rapport;\n    std::cout << rapport.generer() << '\\n';\n}\n",
         "output": "Export CSV\n",
         "when": "Utilisez-le si plusieurs types de rapports suivent les mêmes étapes mais doivent créer des exports différents.",
-        "compare": "Factory Method choisit un produit, comme un export. Abstract Factory fournit plusieurs produits prévus pour fonctionner ensemble, comme un annuaire et un canal de notification."
+        "compare": "Factory Method choisit un produit, comme un export. Abstract Factory fournit plusieurs produits prévus pour fonctionner ensemble, comme un annuaire et un canal de notification.",
+        "case": "Un outil génère des rapports CSV et pourra demain générer des rapports PDF. La préparation du rapport reste commune, mais chaque type de rapport doit décider quel export créer.",
+        "decision": "RapportCsv fournit le produit Csv via creerExport(). Un second rapport pourrait créer un autre Export tout en conservant generer().",
+        "diagramDescription": "RapportCsv → Rapport (inherit) ; Csv → Export (inherit) ; Rapport → Export (crée et utilise) ; RapportCsv → Csv (crée)"
     },
     {
         "id": "abstract-factory",
@@ -114,7 +138,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <memory>\n\nstruct Canal {\n    virtual ~Canal() = default;\n    virtual std::string nom() const = 0;\n};\n\nstruct Annuaire {\n    virtual ~Annuaire() = default;\n    virtual std::string nom() const = 0;\n};\n\nstruct CanalLocal final : Canal {\n    std::string nom() const override { return \"Canal local\"; }\n};\n\nstruct AnnuaireLocal final : Annuaire {\n    std::string nom() const override { return \"Annuaire local\"; }\n};\n\nstruct Fabrique {\n    virtual ~Fabrique() = default;\n    virtual std::unique_ptr<Canal> canal() const = 0;\n    virtual std::unique_ptr<Annuaire> annuaire() const = 0;\n};\n\nstruct SuiteLocale final : Fabrique {\n    std::unique_ptr<Canal> canal() const override {\n        return std::make_unique<CanalLocal>();\n    }\n    std::unique_ptr<Annuaire> annuaire() const override {\n        return std::make_unique<AnnuaireLocal>();\n    }\n};\n\nint main() {\n    SuiteLocale suite;\n    const Fabrique& factory = suite;\n    std::cout << factory.canal()->nom() << \" + \"\n              << factory.annuaire()->nom() << '\\n';\n}\n",
         "output": "Canal local + Annuaire local\n",
         "when": "Utilisez-le quand changer de fournisseur doit remplacer tout un ensemble d’outils compatibles.",
-        "compare": "Factory Method concerne le choix d’un produit. Abstract Factory concerne le choix d’une famille de produits. Builder prépare progressivement un seul objet."
+        "compare": "Factory Method concerne le choix d’un produit. Abstract Factory concerne le choix d’une famille de produits. Builder prépare progressivement un seul objet.",
+        "case": "Une application peut fonctionner avec une suite locale ou une suite distante. Chaque suite doit fournir un annuaire et un canal de notification compatibles, sans mélanger les fournisseurs.",
+        "decision": "SuiteLocale est le point où choisir la famille de produits. Le client utilise ensuite les contrats Canal et Annuaire.",
+        "diagramDescription": "SuiteLocale → Fabrique (inherit) ; CanalLocal → Canal (inherit) ; AnnuaireLocal → Annuaire (inherit) ; SuiteLocale → CanalLocal (crée) ; SuiteLocale → AnnuaireLocal (crée)"
     },
     {
         "id": "builder",
@@ -127,7 +154,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <utility>\n\nstruct Rapport {\n    std::string titre;\n    bool stock;\n};\n\nclass RapportBuilder {\npublic:\n    RapportBuilder& titre(std::string valeur) {\n        titre_ = std::move(valeur);\n        return *this;\n    }\n\n    RapportBuilder& avecStock() {\n        stock_ = true;\n        return *this;\n    }\n\n    Rapport construire() const { return {titre_, stock_}; }\n\nprivate:\n    std::string titre_ = \"Rapport\";\n    bool stock_ = false;\n};\n\nint main() {\n    const auto rapport = RapportBuilder{}.titre(\"Inventaire\").avecStock().construire();\n    std::cout << rapport.titre << \" : stock \" << std::boolalpha << rapport.stock << '\\n';\n}\n",
         "output": "Inventaire : stock true\n",
         "when": "Utilisez-le quand un objet a plusieurs informations à renseigner, avec des choix facultatifs ou une préparation en plusieurs étapes.",
-        "compare": "Builder rassemble les morceaux d’un nouvel objet. Prototype part d’un objet déjà configuré et en fait une copie."
+        "compare": "Builder rassemble les morceaux d’un nouvel objet. Prototype part d’un objet déjà configuré et en fait une copie.",
+        "case": "Un export d’inventaire se prépare progressivement. Le titre et la présence des données de stock sont choisis à des moments différents avant de produire un rapport.",
+        "decision": "Le builder garde les choix de préparation. construire() produit un Rapport autonome, distinct du builder.",
+        "diagramDescription": "RapportBuilder → Rapport (construit)"
     },
     {
         "id": "prototype",
@@ -140,7 +170,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <memory>\n#include <utility>\n\nstruct Document {\n    virtual ~Document() = default;\n    virtual std::unique_ptr<Document> cloner() const = 0;\n    virtual std::string titre() const = 0;\n};\n\nclass Note final : public Document {\npublic:\n    explicit Note(std::string titre) : titre_(std::move(titre)) {}\n\n    std::unique_ptr<Document> cloner() const override {\n        return std::make_unique<Note>(*this);\n    }\n\n    std::string titre() const override { return titre_; }\n\nprivate:\n    std::string titre_;\n};\n\nint main() {\n    Note original{\"Contrat\"};\n    const auto copie = original.cloner();\n    std::cout << copie->titre() << '\\n';\n}\n",
         "output": "Contrat\n",
         "when": "Utilisez-le si préparer un objet demande beaucoup de réglages et que plusieurs objets doivent partir des mêmes réglages.",
-        "compare": "Builder construit étape après étape. Prototype reproduit un point de départ existant. Une copie doit être distincte de l’original, même si leurs valeurs sont d’abord identiques."
+        "compare": "Builder construit étape après étape. Prototype reproduit un point de départ existant. Une copie doit être distincte de l’original, même si leurs valeurs sont d’abord identiques.",
+        "case": "Un éditeur propose de dupliquer un document sélectionné. Le document peut être une note ou un autre type, et le bouton Dupliquer doit préserver son type concret.",
+        "decision": "L’appel à cloner() est disponible via Document. Note sait comment copier son propre état, sans imposer au client de tester tous les types.",
+        "diagramDescription": "Note → Document (inherit) ; Note → Note (copie *this)"
     },
     {
         "id": "singleton",
@@ -153,7 +186,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n\nclass Configuration {\npublic:\n    static Configuration& instance() {\n        static Configuration configuration;\n        return configuration;\n    }\n\n    Configuration(const Configuration&) = delete;\n    Configuration& operator=(const Configuration&) = delete;\n    std::string langue() const { return \"fr\"; }\n\nprivate:\n    Configuration() = default;\n};\n\nint main() {\n    std::cout << Configuration::instance().langue() << '\\n';\n}\n",
         "output": "fr\n",
         "when": "Utilisez-le si cette unicité est une vraie contrainte dans le processus et si la configuration reste stable.",
-        "compare": "Une classe avec des méthodes statiques ne crée pas forcément d’objet. Singleton fournit bien un objet unique. Transmettre un objet partagé peut offrir le même partage sans imposer un accès global."
+        "compare": "Une classe avec des méthodes statiques ne crée pas forcément d’objet. Singleton fournit bien un objet unique. Transmettre un objet partagé peut offrir le même partage sans imposer un accès global.",
+        "case": "Un petit programme utilise une configuration unique pendant son exécution. On souhaite centraliser la création de cette instance et interdire sa copie.",
+        "decision": "La variable statique locale est construite au premier appel d’instance(). Un accès global doit rester un choix assumé, car il rend les dépendances moins visibles.",
+        "diagramDescription": "Configuration → Configuration (instance statique)"
     },
     {
         "id": "adapter",
@@ -166,7 +202,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <stdexcept>\n\nstruct Paiement {\n    virtual ~Paiement() = default;\n    virtual int payerCentimes(int centimes) const = 0;\n};\n\nstruct AncienTerminal {\n    int reglerEuros(int euros) const { return euros; }\n};\n\nclass Adaptateur final : public Paiement {\npublic:\n    explicit Adaptateur(const AncienTerminal& terminal) : terminal_(terminal) {}\n\n    int payerCentimes(int centimes) const override {\n        if (centimes < 0 || centimes % 100 != 0) {\n            throw std::invalid_argument(\"Le terminal accepte des euros entiers\");\n        }\n        return terminal_.reglerEuros(centimes / 100);\n    }\n\nprivate:\n    const AncienTerminal& terminal_;\n};\n\nint main() {\n    AncienTerminal ancien;\n    Adaptateur paiement{ancien};\n    std::cout << paiement.payerCentimes(2500) << \" euros\\n\";\n}\n",
         "output": "25 euros\n",
         "when": "Utilisez-le pour brancher une bibliothèque ou un service dont les méthodes ne correspondent pas au contrat attendu.",
-        "compare": "Adapter rend deux contrats compatibles. Facade propose une entrée simple vers plusieurs services. Proxy garde le même contrat et contrôle l’accès."
+        "compare": "Adapter rend deux contrats compatibles. Facade propose une entrée simple vers plusieurs services. Proxy garde le même contrat et contrôle l’accès.",
+        "case": "La nouvelle application exprime les paiements en centimes. Un ancien terminal reçoit seulement des montants en euros entiers. Le code client doit conserver son contrat en centimes.",
+        "decision": "L’adaptateur porte la conversion et la vérification des montants représentables. Le terminal existant continue à recevoir ses appels habituels.",
+        "diagramDescription": "Adaptateur → Paiement (inherit) ; Adaptateur → AncienTerminal (observe)"
     },
     {
         "id": "bridge",
@@ -179,7 +218,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n\nstruct Canal {\n    virtual ~Canal() = default;\n    virtual std::string envoyer(std::string message) const = 0;\n};\n\nstruct Mail final : Canal {\n    std::string envoyer(std::string message) const override {\n        return \"Mail : \" + message;\n    }\n};\n\nclass Alerte {\npublic:\n    explicit Alerte(const Canal& canal) : canal_(canal) {}\n    virtual ~Alerte() = default;\n    virtual std::string diffuser() const { return canal_.envoyer(\"Information\"); }\n\nprotected:\n    const Canal& canal_;\n};\n\nclass AlerteUrgente final : public Alerte {\npublic:\n    using Alerte::Alerte;\n    std::string diffuser() const override { return canal_.envoyer(\"Urgent\"); }\n};\n\nint main() {\n    Mail canal;\n    AlerteUrgente alerte{canal};\n    std::cout << alerte.diffuser() << '\\n';\n}\n",
         "output": "Mail : Urgent\n",
         "when": "Utilisez-le quand deux choix évoluent séparément : ici, le contenu du document et son format de sortie.",
-        "compare": "Adapter relie après coup des contrats différents. Bridge organise dès la conception deux éléments qui doivent évoluer séparément."
+        "compare": "Adapter relie après coup des contrats différents. Bridge organise dès la conception deux éléments qui doivent évoluer séparément.",
+        "case": "Une supervision envoie des alertes normales ou urgentes par mail ou par un autre canal. On veut ajouter un canal sans recréer chaque catégorie d’alerte.",
+        "decision": "L’alerte choisit son contenu, le canal choisit son transport. Leur liaison permet de combiner ces deux variations.",
+        "diagramDescription": "AlerteUrgente → Alerte (inherit) ; Mail → Canal (inherit) ; Alerte → Canal (observe)"
     },
     {
         "id": "composite",
@@ -192,7 +234,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <memory>\n#include <vector>\n#include <utility>\n#include <stdexcept>\n\nstruct Element {\n    virtual ~Element() = default;\n    virtual int prix() const = 0;\n};\n\nclass Article final : public Element {\npublic:\n    explicit Article(int prix) : prix_(prix) {}\n    int prix() const override { return prix_; }\n\nprivate:\n    int prix_;\n};\n\nclass Lot final : public Element {\npublic:\n    void ajouter(std::unique_ptr<Element> enfant) {\n        if (!enfant) throw std::invalid_argument(\"Enfant absent\");\n        enfants_.push_back(std::move(enfant));\n    }\n\n    int prix() const override {\n        int total = 0;\n        for (const auto& enfant : enfants_) {\n            total += enfant->prix();\n        }\n        return total;\n    }\n\nprivate:\n    std::vector<std::unique_ptr<Element>> enfants_;\n};\n\nint main() {\n    Lot lot;\n    lot.ajouter(std::make_unique<Article>(10));\n    lot.ajouter(std::make_unique<Article>(20));\n    std::cout << lot.prix() << '\\n';\n}\n",
         "output": "30\n",
         "when": "Utilisez-le quand les objets forment un arbre et qu’une action doit s’appliquer à un élément seul comme à un ensemble.",
-        "compare": "Composite organise plusieurs enfants. Decorator enveloppe généralement un seul objet pour lui ajouter un comportement."
+        "compare": "Composite organise plusieurs enfants. Decorator enveloppe généralement un seul objet pour lui ajouter un comportement.",
+        "case": "Un catalogue contient des articles et des lots, dont certains contiennent d’autres lots. Le client veut obtenir le prix de n’importe quel élément avec le même appel.",
+        "decision": "Un lot additionne ses enfants via Element::prix(). La récursion apparaît naturellement lorsqu’un enfant est aussi un lot.",
+        "diagramDescription": "Article → Element (inherit) ; Lot → Element (inherit) ; Lot → Element (0..* enfants)"
     },
     {
         "id": "decorator",
@@ -205,7 +250,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n\nstruct Canal {\n    virtual ~Canal() = default;\n    virtual std::string envoyer() const = 0;\n};\n\nstruct Mail final : Canal {\n    std::string envoyer() const override { return \"Mail\"; }\n};\n\nclass Journalise final : public Canal {\npublic:\n    explicit Journalise(const Canal& suivant) : suivant_(suivant) {}\n    std::string envoyer() const override { return \"[log] \" + suivant_.envoyer(); }\n\nprivate:\n    const Canal& suivant_;\n};\n\nint main() {\n    Mail mail;\n    Journalise canal{mail};\n    std::cout << canal.envoyer() << '\\n';\n}\n",
         "output": "[log] Mail\n",
         "when": "Utilisez-le pour ajouter des options combinables à un service tout en gardant la même méthode d’appel.",
-        "compare": "Decorator ajoute un comportement. Proxy autorise, bloque ou retarde l’accès. Adapter change le contrat utilisé pour appeler un service."
+        "compare": "Decorator ajoute un comportement. Proxy autorise, bloque ou retarde l’accès. Adapter change le contrat utilisé pour appeler un service.",
+        "case": "Un envoi de mail doit parfois être journalisé. On veut activer cette option pour certains canaux et pouvoir ajouter plus tard d’autres enrichissements.",
+        "decision": "Journalise respecte Canal et enveloppe un autre Canal. L’appelant peut utiliser l’objet enrichi à la place du canal simple.",
+        "diagramDescription": "Mail → Canal (inherit) ; Journalise → Canal (inherit) ; Journalise → Canal (enveloppe)"
     },
     {
         "id": "facade",
@@ -218,7 +266,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nstruct Stock {\n    void reserver() const { std::cout << \"Stock reserve\\n\"; }\n};\n\nstruct Facturation {\n    void facturer() const { std::cout << \"Facture creee\\n\"; }\n};\n\nclass Vente {\npublic:\n    void confirmer() const {\n        stock_.reserver();\n        facturation_.facturer();\n    }\n\nprivate:\n    Stock stock_;\n    Facturation facturation_;\n};\n\nint main() {\n    Vente vente;\n    vente.confirmer();\n}\n",
         "output": "Stock reserve\nFacture creee\n",
         "when": "Utilisez-le si plusieurs écrans répètent les mêmes appels techniques pour effectuer une opération métier.",
-        "compare": "Facade simplifie l’utilisation de plusieurs services. Mediator organise les échanges entre plusieurs objets. Une façade ne remplace pas toute la logique métier par une seule énorme classe."
+        "compare": "Facade simplifie l’utilisation de plusieurs services. Mediator organise les échanges entre plusieurs objets. Une façade ne remplace pas toute la logique métier par une seule énorme classe.",
+        "case": "Confirmer une vente demande de réserver le stock puis de déclencher la facturation. Plusieurs écrans ont besoin de cette même séquence.",
+        "decision": "Vente présente une opération simple qui coordonne les deux composants. Elle constitue le point d’entrée commun de cette action.",
+        "diagramDescription": "Vente → Stock (1) ; Vente → Facturation (1)"
     },
     {
         "id": "flyweight",
@@ -231,7 +282,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <memory>\n#include <map>\n\nstruct Style {\n    const std::string police;\n};\n\nclass Styles {\npublic:\n    std::shared_ptr<const Style> obtenir(const std::string& police) {\n        auto& style = cache_[police];\n        if (!style) style = std::make_shared<const Style>(Style{police});\n        return style;\n    }\n\nprivate:\n    std::map<std::string, std::shared_ptr<const Style>> cache_;\n};\n\nstruct Lettre {\n    char valeur;\n    int position;\n    std::shared_ptr<const Style> style;\n};\n\nint main() {\n    Styles styles;\n    Lettre a{'A', 0, styles.obtenir(\"Comfortaa\")};\n    Lettre b{'B', 1, styles.obtenir(\"Comfortaa\")};\n    std::cout << std::boolalpha << (a.style == b.style) << '\\n';\n}\n",
         "output": "true\n",
         "when": "Utilisez-le lorsque beaucoup d’objets répètent réellement des données identiques et que leur partage économise une quantité utile de mémoire.",
-        "compare": "Singleton impose une seule instance pour une classe. Flyweight permet plusieurs instances partagées, une par valeur ou clé du catalogue."
+        "compare": "Singleton impose une seule instance pour une classe. Flyweight permet plusieurs instances partagées, une par valeur ou clé du catalogue.",
+        "case": "Un document contient des milliers de lettres qui utilisent souvent la même police. Répéter la description de la police dans chaque lettre consommerait inutilement de la mémoire.",
+        "decision": "La position et le caractère restent propres à la lettre. La description immuable du style est partagée et récupérée dans un cache.",
+        "diagramDescription": "Styles → Style (partage et conserve) ; Lettre → Style (partage 1)"
     },
     {
         "id": "proxy",
@@ -244,7 +298,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <memory>\n\nstruct Image {\n    virtual ~Image() = default;\n    virtual void afficher() = 0;\n};\n\nstruct ImageDisque final : Image {\n    ImageDisque() { std::cout << \"Chargement\\n\"; }\n    void afficher() override { std::cout << \"Affichage\\n\"; }\n};\n\nclass ImageProxy final : public Image {\npublic:\n    void afficher() override {\n        if (!image_) image_ = std::make_unique<ImageDisque>();\n        image_->afficher();\n    }\n\nprivate:\n    std::unique_ptr<ImageDisque> image_;\n};\n\nint main() {\n    ImageProxy image;\n    image.afficher();\n    image.afficher();\n}\n",
         "output": "Chargement\nAffichage\nAffichage\n",
         "when": "Utilisez-le si vous devez contrôler un accès, différer un chargement ou interposer un cache derrière le même contrat.",
-        "compare": "Proxy contrôle l’accès à un service. Decorator enrichit ce que fait le service. Adapter permet de l’appeler avec un autre contrat."
+        "compare": "Proxy contrôle l’accès à un service. Decorator enrichit ce que fait le service. Adapter permet de l’appeler avec un autre contrat.",
+        "case": "Une galerie référence des images volumineuses, mais l’utilisateur n’en ouvre qu’une partie. Charger toutes les images dès la création des objets serait coûteux.",
+        "decision": "ImageProxy représente une image avant son chargement. Il crée le véritable objet au premier affichage, puis le réutilise.",
+        "diagramDescription": "ImageProxy → Image (inherit) ; ImageDisque → Image (inherit) ; ImageProxy → ImageDisque (0..1)"
     },
     {
         "id": "chain",
@@ -257,7 +314,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nclass Filtre {\npublic:\n    explicit Filtre(const Filtre* suivant = nullptr) : suivant_(suivant) {}\n    virtual ~Filtre() = default;\n\n    bool traiter(int valeur) const {\n        return accepter(valeur) && (!suivant_ || suivant_->traiter(valeur));\n    }\n\nprotected:\n    virtual bool accepter(int valeur) const = 0;\n\nprivate:\n    const Filtre* suivant_;\n};\n\nclass Positif final : public Filtre {\npublic:\n    using Filtre::Filtre;\n    bool accepter(int valeur) const override { return valeur > 0; }\n};\n\nclass Petit final : public Filtre {\npublic:\n    bool accepter(int valeur) const override { return valeur < 100; }\n};\n\nint main() {\n    Petit petit;\n    Positif chaine{&petit};\n    std::cout << std::boolalpha << chaine.traiter(42) << ' ' << chaine.traiter(120) << '\\n';\n}\n",
         "output": "true false\n",
         "when": "Utilisez-le quand les contrôles doivent être réordonnés, ajoutés ou réutilisés dans plusieurs parcours.",
-        "compare": "Chain of Responsibility fait passer une demande dans plusieurs contrôles. Strategy choisit une seule manière d’effectuer un travail."
+        "compare": "Chain of Responsibility fait passer une demande dans plusieurs contrôles. Strategy choisit une seule manière d’effectuer un travail.",
+        "case": "Une valeur entrante doit être positive puis inférieure à une limite. D’autres contrôles pourront être insérés sans réécrire chaque filtre.",
+        "decision": "Chaque filtre accepte ou interrompt la demande. Le lien vers le suivant permet de composer une chaîne de validations.",
+        "diagramDescription": "Positif → Filtre (inherit) ; Petit → Filtre (inherit) ; Filtre → Filtre (suivant 0..1)"
     },
     {
         "id": "command",
@@ -270,7 +330,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nstruct Compteur {\n    int valeur = 0;\n};\n\nstruct Commande {\n    virtual ~Commande() = default;\n    virtual void executer() = 0;\n    virtual void annuler() = 0;\n};\n\nclass Incrementer final : public Commande {\npublic:\n    explicit Incrementer(Compteur& compteur) : compteur_(compteur) {}\n    void executer() override { ++compteur_.valeur; }\n    void annuler() override { --compteur_.valeur; }\n\nprivate:\n    Compteur& compteur_;\n};\n\nint main() {\n    Compteur compteur;\n    Incrementer action{compteur};\n    action.executer();\n    std::cout << compteur.valeur << '\\n';\n    action.annuler();\n    std::cout << compteur.valeur << '\\n';\n}\n",
         "output": "1\n0\n",
         "when": "Utilisez-le si une action doit être mise en attente, historisée ou rejouée plutôt qu’exécutée immédiatement.",
-        "compare": "Command représente « quoi faire ». Strategy représente « comment faire le même travail ». Une file de commandes n’est pas nécessairement une file persistante."
+        "compare": "Command représente « quoi faire ». Strategy représente « comment faire le même travail ». Une file de commandes n’est pas nécessairement une file persistante.",
+        "case": "Une interface doit exécuter une action maintenant ou plus tard, puis permettre de l’annuler. Le composant qui déclenche l’action doit manipuler un contrat uniforme.",
+        "decision": "Incrementer réunit l’action, son récepteur et l’opération inverse. L’objet commande peut ensuite être stocké dans un historique.",
+        "diagramDescription": "Incrementer → Commande (inherit) ; Incrementer → Compteur (récepteur)"
     },
     {
         "id": "interpreter",
@@ -283,7 +346,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nstruct Expression {\n    virtual ~Expression() = default;\n    virtual int evaluer() const = 0;\n};\n\nstruct Nombre final : Expression {\n    explicit Nombre(int nombre) : valeur(nombre) {}\n    int evaluer() const override { return valeur; }\n    int valeur;\n};\n\nclass Somme final : public Expression {\npublic:\n    Somme(const Expression& gauche, const Expression& droite)\n        : gauche_(gauche), droite_(droite) {}\n\n    int evaluer() const override { return gauche_.evaluer() + droite_.evaluer(); }\n\nprivate:\n    const Expression& gauche_;\n    const Expression& droite_;\n};\n\nint main() {\n    Nombre a{2};\n    Nombre b{3};\n    Somme expression{a, b};\n    std::cout << expression.evaluer() << '\\n';\n}\n",
         "output": "5\n",
         "when": "Utilisez-le pour un petit langage de règles dont la grammaire reste limitée et stable.",
-        "compare": "Composite décrit la forme d’un arbre. Interpreter utilise un arbre pour donner un sens à une expression et calculer son résultat."
+        "compare": "Composite décrit la forme d’un arbre. Interpreter utilise un arbre pour donner un sens à une expression et calculer son résultat.",
+        "case": "Une petite règle métier représente une expression composée de nombres et d’additions. On veut combiner ces règles sous forme d’arbre et les évaluer.",
+        "decision": "Nombre et Somme implémentent le même contrat. Somme délègue l’évaluation à ses enfants puis combine leurs résultats.",
+        "diagramDescription": "Nombre → Expression (inherit) ; Somme → Expression (inherit) ; Somme → Expression (2 opérandes)"
     },
     {
         "id": "iterator",
@@ -296,7 +362,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <vector>\n\nclass Collection {\npublic:\n    auto begin() const { return valeurs_.begin(); }\n    auto end() const { return valeurs_.end(); }\n\nprivate:\n    std::vector<int> valeurs_{2, 4, 6};\n};\n\nint main() {\n    Collection collection;\n    for (int valeur : collection) {\n        std::cout << valeur << '\\n';\n    }\n}\n",
         "output": "2\n4\n6\n",
         "when": "Utilisez-le pour exposer un parcours standard tout en gardant la liberté de changer le stockage.",
-        "compare": "Iterator décrit comment parcourir une collection. Composite décrit comment organiser des éléments et des groupes. Une structure Composite peut être parcourue avec un Iterator."
+        "compare": "Iterator décrit comment parcourir une collection. Composite décrit comment organiser des éléments et des groupes. Une structure Composite peut être parcourue avec un Iterator.",
+        "case": "Une collection interne doit pouvoir être parcourue par les utilisateurs de la classe, tout en gardant son conteneur comme détail privé.",
+        "decision": "begin() et end() exposent le protocole de parcours reconnu par les boucles C++. L’exemple réutilise les itérateurs du vector.",
+        "diagramDescription": "Collection → vector<int> (stockage)"
     },
     {
         "id": "mediator",
@@ -309,7 +378,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <utility>\n\nstruct Vue {\n    std::string texte;\n};\n\nclass Mediateur {\npublic:\n    explicit Mediateur(Vue& vue) : vue_(vue) {}\n\n    void texteSaisi(std::string texte) {\n        vue_.texte = \"Recherche : \" + texte;\n    }\n\nprivate:\n    Vue& vue_;\n};\n\nclass Champ {\npublic:\n    explicit Champ(Mediateur& mediateur) : mediateur_(mediateur) {}\n    void saisir(std::string texte) { mediateur_.texteSaisi(std::move(texte)); }\n\nprivate:\n    Mediateur& mediateur_;\n};\n\nint main() {\n    Vue vue;\n    Mediateur mediateur{vue};\n    Champ champ{mediateur};\n    champ.saisir(\"C++\");\n    std::cout << vue.texte << '\\n';\n}\n",
         "output": "Recherche : C++\n",
         "when": "Utilisez-le quand plusieurs composants se parlent dans tous les sens et que leurs règles de coordination deviennent difficiles à suivre.",
-        "compare": "Mediator décide comment plusieurs objets collaborent. Observer diffuse un événement à des abonnés sans centraliser toutes leurs décisions."
+        "compare": "Mediator décide comment plusieurs objets collaborent. Observer diffuse un événement à des abonnés sans centraliser toutes leurs décisions.",
+        "case": "Dans un formulaire, saisir un texte doit mettre à jour une zone de résultat. Si chaque champ connaît directement toutes les vues, les dépendances se multiplient.",
+        "decision": "Le champ signale l’événement au médiateur. Le médiateur sait quelle vue actualiser et peut coordonner d’autres composants.",
+        "diagramDescription": "Champ → Mediateur (signale) ; Mediateur → Vue (actualise)"
     },
     {
         "id": "memento",
@@ -322,7 +394,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <utility>\n\nclass Editeur {\npublic:\n    struct Sauvegarde {\n        std::string texte;\n    };\n\n    void saisir(std::string texte) { texte_ = std::move(texte); }\n    Sauvegarde sauvegarder() const { return {texte_}; }\n    void restaurer(const Sauvegarde& sauvegarde) { texte_ = sauvegarde.texte; }\n    const std::string& texte() const { return texte_; }\n\nprivate:\n    std::string texte_;\n};\n\nint main() {\n    Editeur editeur;\n    editeur.saisir(\"Version A\");\n    const auto sauvegarde = editeur.sauvegarder();\n    editeur.saisir(\"Version B\");\n    editeur.restaurer(sauvegarde);\n    std::cout << editeur.texte() << '\\n';\n}\n",
         "output": "Version A\n",
         "when": "Utilisez-le pour une fonction Annuler ou pour revenir à des versions successives d’un objet.",
-        "compare": "Memento conserve un état. Command conserve une action. Revenir à un état et exécuter une action inverse sont deux manières différentes de proposer Annuler."
+        "compare": "Memento conserve un état. Command conserve une action. Revenir à un état et exécuter une action inverse sont deux manières différentes de proposer Annuler.",
+        "case": "Un éditeur doit revenir au texte présent avant une modification. Le composant qui gère l’historique veut conserver une sauvegarde et la rendre à l’éditeur.",
+        "decision": "Le memento capture l’état par valeur. restaurer() relit cette sauvegarde pour retrouver la version précédente.",
+        "diagramDescription": "Editeur → Sauvegarde (crée et restaure)"
     },
     {
         "id": "observer",
@@ -335,7 +410,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <vector>\n#include <functional>\n#include <utility>\n\nclass Stock {\npublic:\n    void abonner(std::function<void(int)> callback) {\n        abonnes_.push_back(std::move(callback));\n    }\n\n    void modifier(int quantite) {\n        quantite_ = quantite;\n        for (const auto& callback : abonnes_) callback(quantite_);\n    }\n\nprivate:\n    int quantite_ = 0;\n    std::vector<std::function<void(int)>> abonnes_;\n};\n\nint main() {\n    Stock stock;\n    stock.abonner([](int quantite) { std::cout << \"Stock : \" << quantite << '\\n'; });\n    stock.modifier(5);\n}\n",
         "output": "Stock : 5\n",
         "when": "Utilisez-le quand plusieurs réactions indépendantes doivent se déclencher après un même événement.",
-        "compare": "Observer diffuse une information. Mediator coordonne une collaboration. Un abonné choisit quoi faire de l’événement reçu."
+        "compare": "Observer diffuse une information. Mediator coordonne une collaboration. Un abonné choisit quoi faire de l’événement reçu.",
+        "case": "Lorsque le stock change, une vue et un système d’alerte doivent pouvoir être prévenus. Le stock doit pouvoir fonctionner quel que soit le nombre d’abonnés.",
+        "decision": "Stock déclenche les callbacks enregistrés après la modification. La lambda est ici un abonné qui affiche la nouvelle quantité.",
+        "diagramDescription": "Stock → Callback (0..* abonnés)"
     },
     {
         "id": "state",
@@ -348,7 +426,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <memory>\n#include <stdexcept>\n\nstruct Etat {\n    virtual ~Etat() = default;\n    virtual std::string nom() const = 0;\n    virtual std::unique_ptr<Etat> suivant() const = 0;\n};\n\nstruct Payee final : Etat {\n    std::string nom() const override { return \"Payee\"; }\n    std::unique_ptr<Etat> suivant() const override {\n        throw std::logic_error(\"Deja payee\");\n    }\n};\n\nstruct Brouillon final : Etat {\n    std::string nom() const override { return \"Brouillon\"; }\n    std::unique_ptr<Etat> suivant() const override { return std::make_unique<Payee>(); }\n};\n\nclass Commande {\npublic:\n    void avancer() { etat_ = etat_->suivant(); }\n    std::string etat() const { return etat_->nom(); }\n\nprivate:\n    std::unique_ptr<Etat> etat_ = std::make_unique<Brouillon>();\n};\n\nint main() {\n    Commande commande;\n    std::cout << commande.etat() << '\\n';\n    commande.avancer();\n    std::cout << commande.etat() << '\\n';\n}\n",
         "output": "Brouillon\nPayee\n",
         "when": "Utilisez-le si de nombreuses actions changent de comportement selon l’état et si les conditions deviennent répétitives.",
-        "compare": "State exprime la situation actuelle d’un objet et les actions qu’elle permet. Strategy choisit une manière de calculer, sans représenter un cycle de vie."
+        "compare": "State exprime la situation actuelle d’un objet et les actions qu’elle permet. Strategy choisit une manière de calculer, sans représenter un cycle de vie.",
+        "case": "Une commande débute en brouillon et passe ensuite à l’état payé. Les transitions autorisées dépendent de son état courant.",
+        "decision": "Commande délègue la transition à Etat. Le brouillon crée l’état suivant, tandis que Payee refuse de continuer.",
+        "diagramDescription": "Commande → Etat (1 état courant) ; Brouillon → Etat (inherit) ; Payee → Etat (inherit) ; Brouillon → Payee (transition)"
     },
     {
         "id": "strategy",
@@ -361,7 +442,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nstruct Tarif {\n    virtual ~Tarif() = default;\n    virtual int frais() const = 0;\n};\n\nstruct Standard final : Tarif {\n    int frais() const override { return 5; }\n};\n\nstruct Express final : Tarif {\n    int frais() const override { return 12; }\n};\n\nint total(int montant, const Tarif& tarif) {\n    return montant + tarif.frais();\n}\n\nint main() {\n    Standard standard;\n    Express express;\n    std::cout << total(100, standard) << ' ' << total(100, express) << '\\n';\n}\n",
         "output": "105 112\n",
         "when": "Utilisez-le si plusieurs manières de faire le même calcul doivent être interchangeables.",
-        "compare": "Strategy choisit une manière de travailler. State change le comportement en fonction d’un état métier. Template Method conserve un déroulement et laisse des sous-classes préciser certaines étapes."
+        "compare": "Strategy choisit une manière de travailler. State change le comportement en fonction d’un état métier. Template Method conserve un déroulement et laisse des sous-classes préciser certaines étapes.",
+        "case": "Le même panier peut utiliser une livraison standard ou express. Le total doit intégrer les frais choisis sans connaître la formule de chaque tarif.",
+        "decision": "La fonction total() reçoit Tarif par référence. Les deux objets concrets rendent le calcul interchangeable.",
+        "diagramDescription": "Standard → Tarif (inherit) ; Express → Tarif (inherit) ; total() → Tarif (utilise)"
     },
     {
         "id": "template-method",
@@ -374,7 +458,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nclass Import {\npublic:\n    virtual ~Import() = default;\n\n    void executer() const {\n        std::cout << \"Lecture\\n\";\n        convertir();\n        std::cout << \"Validation\\n\";\n    }\n\nprotected:\n    virtual void convertir() const = 0;\n};\n\nclass ImportCsv final : public Import {\n    void convertir() const override { std::cout << \"Conversion CSV\\n\"; }\n};\n\nint main() {\n    ImportCsv import;\n    import.executer();\n}\n",
         "output": "Lecture\nConversion CSV\nValidation\n",
         "when": "Utilisez-le quand plusieurs traitements partagent un ordre d’étapes stable mais diffèrent sur quelques étapes.",
-        "compare": "Template Method repose sur l’héritage. Strategy confie un travail à un autre objet. Strategy permet plus facilement de changer ce choix sur un objet déjà créé."
+        "compare": "Template Method repose sur l’héritage. Strategy confie un travail à un autre objet. Strategy permet plus facilement de changer ce choix sur un objet déjà créé.",
+        "case": "Plusieurs imports suivent les étapes lecture, conversion et validation. Seule la conversion varie selon le format de fichier.",
+        "decision": "Import fixe la séquence dans executer(). La sous-classe Csv personnalise le point d’extension convertir().",
+        "diagramDescription": "ImportCsv → Import (inherit)"
     },
     {
         "id": "visitor",
@@ -387,7 +474,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nclass Fichier;\nclass Dossier;\n\nstruct Visiteur {\n    virtual ~Visiteur() = default;\n    virtual void visiter(const Fichier&) = 0;\n    virtual void visiter(const Dossier&) = 0;\n};\n\nstruct Element {\n    virtual ~Element() = default;\n    virtual void accepter(Visiteur&) const = 0;\n};\n\nclass Fichier final : public Element {\npublic:\n    void accepter(Visiteur& visiteur) const override { visiteur.visiter(*this); }\n};\n\nclass Dossier final : public Element {\npublic:\n    void accepter(Visiteur& visiteur) const override { visiteur.visiter(*this); }\n};\n\nstruct Inventaire final : Visiteur {\n    void visiter(const Fichier&) override { std::cout << \"Un fichier\\n\"; }\n    void visiter(const Dossier&) override { std::cout << \"Un dossier\\n\"; }\n};\n\nint main() {\n    Fichier fichier;\n    Dossier dossier;\n    Inventaire inventaire;\n    fichier.accepter(inventaire);\n    dossier.accepter(inventaire);\n}\n",
         "output": "Un fichier\nUn dossier\n",
         "when": "Utilisez-le si les types de demandes changent peu, mais que vous ajoutez souvent de nouvelles opérations sur ces types.",
-        "compare": "Ajouter un nouveau visiteur permet d’ajouter une opération sans modifier chaque demande. Ajouter une nouvelle classe de demande demande, au contraire, de mettre les visiteurs à jour."
+        "compare": "Ajouter un nouveau visiteur permet d’ajouter une opération sans modifier chaque demande. Ajouter une nouvelle classe de demande demande, au contraire, de mettre les visiteurs à jour.",
+        "case": "Une arborescence stable contient des fichiers et des dossiers. On veut ajouter un inventaire, puis d’autres analyses, sans concentrer ces traitements dans les éléments.",
+        "decision": "Le visiteur reçoit chaque type concret par surcharge. L’appel virtuel accepter() transmet le bon type à visiter().",
+        "diagramDescription": "Fichier → Element (inherit) ; Dossier → Element (inherit) ; Inventaire → Visiteur (inherit) ; Element → Visiteur (accepte) ; Visiteur → Fichier (visite) ; Visiteur → Dossier (visite)"
     },
     {
         "id": "mvc",
@@ -400,7 +490,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <stdexcept>\n\nstruct Modele {\n    int stock = 0;\n};\n\nstruct Vue {\n    void afficher(const Modele& modele) const {\n        std::cout << \"Stock : \" << modele.stock << '\\n';\n    }\n};\n\nclass Controleur {\npublic:\n    Controleur(Modele& modele, const Vue& vue) : modele_(modele), vue_(vue) {}\n    void approvisionner(int quantite) {\n        if (quantite <= 0) throw std::invalid_argument(\"Quantite positive attendue\");\n        modele_.stock += quantite;\n        vue_.afficher(modele_);\n    }\n\nprivate:\n    Modele& modele_;\n    const Vue& vue_;\n};\n\nint main() {\n    Modele modele;\n    Vue vue;\n    Controleur controleur{modele, vue};\n    controleur.approvisionner(3);\n}\n",
         "output": "Stock : 3\n",
         "when": "Utilisez cette séparation quand les règles métier doivent rester compréhensibles même si les écrans changent.",
-        "compare": "MVC organise les responsabilités du modèle, de la vue et du contrôleur. Strategy peut être utilisé à l’intérieur du modèle. MVC est distinct des 23 patterns classiques."
+        "compare": "MVC organise les responsabilités du modèle, de la vue et du contrôleur. Strategy peut être utilisé à l’intérieur du modèle. MVC est distinct des 23 patterns classiques.",
+        "case": "Une interface de stock doit pouvoir changer sa présentation sans mélanger la lecture des données, l’intention utilisateur et l’écriture de la vue.",
+        "decision": "Le contrôleur reçoit l’approvisionnement, modifie le modèle puis demande à la vue de le présenter.",
+        "diagramDescription": "Controleur → Modele (modifie) ; Controleur → Vue (déclenche) ; Vue → Modele (lit)"
     },
     {
         "id": "value-object",
@@ -413,7 +506,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <stdexcept>\n\nclass Montant {\npublic:\n    explicit Montant(int centimes) : centimes_(centimes) {\n        if (centimes < 0) throw std::invalid_argument(\"Montant negatif\");\n    }\n\n    bool operator==(const Montant&) const = default;\n    int centimes() const { return centimes_; }\n\nprivate:\n    int centimes_;\n};\n\nint main() {\n    const Montant premier{500};\n    const Montant second{500};\n    std::cout << std::boolalpha << (premier == second) << '\\n';\n}\n",
         "output": "true\n",
         "when": "Utilisez-le quand une donnée possède une règle métier ou une signification qu’un simple entier ou texte n’exprime pas bien.",
-        "compare": "Une entité conserve son identité même si ses propriétés changent, comme un dossier identifié par son numéro. Un Value Object est défini par ses valeurs, comme une quantité."
+        "compare": "Une entité conserve son identité même si ses propriétés changent, comme un dossier identifié par son numéro. Un Value Object est défini par ses valeurs, comme une quantité.",
+        "case": "Une facture utilise des montants. Deux montants de 500 centimes doivent être égaux, quelle que soit leur origine, et une valeur négative doit être refusée.",
+        "decision": "Montant réunit la valeur, sa validation et sa comparaison. L’égalité porte sur les centimes plutôt que sur une identité technique.",
+        "diagramDescription": "La classe réunit ses attributs et ses opérations."
     },
     {
         "id": "grasp-expert",
@@ -426,7 +522,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <vector>\n\nstruct Ligne {\n    int quantite;\n    int prix;\n    int total() const { return quantite * prix; }\n};\n\nstruct Commande {\n    std::vector<Ligne> lignes;\n    int total() const {\n        int somme = 0;\n        for (const auto& ligne : lignes) somme += ligne.total();\n        return somme;\n    }\n};\n\nint main() {\n    Commande commande{{{2, 10}, {1, 5}}};\n    std::cout << commande.total() << '\\n';\n}\n",
         "output": "25\n",
         "when": "Confiez une décision à l’objet qui connaît déjà les données utiles, si cela reste cohérent avec son rôle.",
-        "compare": "Information Expert aide à choisir où placer une règle. High Cohesion aide à vérifier que l’objet garde un rôle clair."
+        "compare": "Information Expert aide à choisir où placer une règle. High Cohesion aide à vérifier que l’objet garde un rôle clair.",
+        "case": "Pour calculer une commande, il faut multiplier chaque quantité par son prix, puis additionner les lignes. On cherche où placer ces calculs.",
+        "decision": "Ligne dispose des données de son total. Commande possède les lignes et réalise la somme. Chacune est experte de l’information qu’elle connaît.",
+        "diagramDescription": "Commande → Ligne (0..*)"
     },
     {
         "id": "grasp-creator",
@@ -439,7 +538,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <vector>\n#include <stdexcept>\n\nstruct Ligne {\n    int quantite;\n};\n\nclass Commande {\npublic:\n    void ajouter(int quantite) {\n        if (quantite <= 0) throw std::invalid_argument(\"Quantite invalide\");\n        lignes_.push_back(Ligne{quantite});\n    }\n\n    std::size_t taille() const { return lignes_.size(); }\n\nprivate:\n    std::vector<Ligne> lignes_;\n};\n\nint main() {\n    Commande commande;\n    commande.ajouter(2);\n    std::cout << commande.taille() << \" ligne\\n\";\n}\n",
         "output": "1 ligne\n",
         "when": "Confiez la création à un objet qui possède, collecte ou utilise directement les données nécessaires.",
-        "compare": "Creator est un principe de répartition des responsabilités. Builder est une solution possible quand cette création demande plusieurs étapes."
+        "compare": "Creator est un principe de répartition des responsabilités. Builder est une solution possible quand cette création demande plusieurs étapes.",
+        "case": "Une commande crée et conserve ses lignes. Les quantités doivent être vérifiées au moment de l’ajout.",
+        "decision": "La responsabilité de création revient à Commande, qui connaît la collection et garantit la validation avant l’insertion.",
+        "diagramDescription": "Commande → Ligne (0..* lignes) ; Commande → Ligne (crée)"
     },
     {
         "id": "grasp-controller",
@@ -452,7 +554,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n#include <utility>\n#include <stdexcept>\n\nclass Inscription {\npublic:\n    std::string inscrire(std::string nom) const {\n        if (nom.empty()) throw std::invalid_argument(\"Nom requis\");\n        return \"Inscrit : \" + nom;\n    }\n};\n\nclass Controleur {\npublic:\n    explicit Controleur(const Inscription& service) : service_(service) {}\n    std::string recevoir(std::string nom) const { return service_.inscrire(std::move(nom)); }\n\nprivate:\n    const Inscription& service_;\n};\n\nint main() {\n    Inscription service;\n    Controleur controleur{service};\n    std::cout << controleur.recevoir(\"Lea\") << '\\n';\n}\n",
         "output": "Inscrit : Lea\n",
         "when": "Utilisez un contrôleur pour donner un point d’entrée clair aux actions venant de l’interface.",
-        "compare": "GRASP Controller désigne un rôle de réception des actions. MVC précise aussi la séparation avec le modèle et la vue."
+        "compare": "GRASP Controller désigne un rôle de réception des actions. MVC précise aussi la séparation avec le modèle et la vue.",
+        "case": "Une action de l’interface inscrit un utilisateur. Le traitement de l’intention doit rester identifiable si l’écran change.",
+        "decision": "Controleur transmet l’inscription au service. La règle du nom obligatoire reste dans Inscription.",
+        "diagramDescription": "Controleur → Inscription (délègue)"
     },
     {
         "id": "grasp-low-coupling",
@@ -465,7 +570,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nstruct Depot {\n    virtual ~Depot() = default;\n    virtual int lire() const = 0;\n};\n\nstruct Memoire final : Depot {\n    int lire() const override { return 7; }\n};\n\nclass Service {\npublic:\n    explicit Service(const Depot& depot) : depot_(depot) {}\n    int stock() const { return depot_.lire(); }\n\nprivate:\n    const Depot& depot_;\n};\n\nint main() {\n    Memoire depot;\n    Service service{depot};\n    std::cout << service.stock() << '\\n';\n}\n",
         "output": "7\n",
         "when": "Limitez le nombre de détails techniques qu’une classe doit connaître sur les autres.",
-        "compare": "Low Coupling concerne ce qu’une classe doit connaître des autres. High Cohesion concerne ce qui appartient à son propre rôle."
+        "compare": "Low Coupling concerne ce qu’une classe doit connaître des autres. High Cohesion concerne ce qui appartient à son propre rôle.",
+        "case": "Un service doit consulter le stock tantôt en mémoire, tantôt dans un stockage externe. Son code ne devrait pas connaître le détail du stockage.",
+        "decision": "Le contrat Depot ne propose que lire(). Le client reçoit la dépendance à la construction.",
+        "diagramDescription": "Service → Depot (observe) ; Memoire → Depot (inherit)"
     },
     {
         "id": "grasp-high-cohesion",
@@ -478,7 +586,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nstruct CalculPrix {\n    int total(int quantite, int prix) const { return quantite * prix; }\n};\n\nstruct Affichage {\n    void montrer(int total) const { std::cout << \"Total : \" << total << '\\n'; }\n};\n\nint main() {\n    CalculPrix calcul;\n    Affichage vue;\n    vue.montrer(calcul.total(3, 10));\n}\n",
         "output": "Total : 30\n",
         "when": "Rassemblez dans une classe les tâches qui servent un même objectif clairement nommé.",
-        "compare": "High Cohesion garde les responsabilités d’une classe cohérentes. Low Coupling réduit la quantité de détails qu’elle connaît sur ses voisines."
+        "compare": "High Cohesion garde les responsabilités d’une classe cohérentes. Low Coupling réduit la quantité de détails qu’elle connaît sur ses voisines.",
+        "case": "Le calcul de prix évolue selon les règles commerciales, tandis que la présentation change avec les besoins de l’interface.",
+        "decision": "CalculPrix regroupe le calcul et Affichage regroupe la restitution. Chacun a une raison claire de changer.",
+        "diagramDescription": "La classe réunit ses attributs et ses opérations."
     },
     {
         "id": "grasp-polymorphism",
@@ -491,7 +602,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n\nstruct Document {\n    virtual ~Document() = default;\n    virtual std::string exporter() const = 0;\n};\n\nstruct Pdf final : Document {\n    std::string exporter() const override { return \"PDF\"; }\n};\n\nvoid publier(const Document& document) {\n    std::cout << document.exporter() << '\\n';\n}\n\nint main() {\n    Pdf document;\n    publier(document);\n}\n",
         "output": "PDF\n",
         "when": "Utilisez plusieurs implémentations quand le comportement change réellement selon le type.",
-        "compare": "Polymorphism est le principe qui permet cet appel commun. Strategy organise concrètement le choix entre des comportements interchangeables."
+        "compare": "Polymorphism est le principe qui permet cet appel commun. Strategy organise concrètement le choix entre des comportements interchangeables.",
+        "case": "Une publication doit accepter différents types de documents. Chaque format sait comment exporter son contenu.",
+        "decision": "La variation est confiée aux types de Document. publier() travaille sur un contrat uniforme.",
+        "diagramDescription": "Pdf → Document (inherit) ; publier() → Document (utilise)"
     },
     {
         "id": "grasp-pure-fabrication",
@@ -504,7 +618,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n\nstruct Journal {\n    void ecrire(const std::string& texte) const { std::cout << texte << '\\n'; }\n};\n\nclass Commande {\npublic:\n    void confirmer(const Journal& journal) {\n        confirmee_ = true;\n        journal.ecrire(\"Commande confirmee\");\n    }\n\nprivate:\n    bool confirmee_ = false;\n};\n\nint main() {\n    Commande commande;\n    Journal journal;\n    commande.confirmer(journal);\n}\n",
         "output": "Commande confirmee\n",
         "when": "Créez une classe de service quand cela protège un rôle métier et rend une tâche technique réutilisable.",
-        "compare": "Information Expert recherche un objet métier déjà bien placé. Pure Fabrication autorise un objet de conception supplémentaire quand aucun objet métier ne convient."
+        "compare": "Information Expert recherche un objet métier déjà bien placé. Pure Fabrication autorise un objet de conception supplémentaire quand aucun objet métier ne convient.",
+        "case": "Plusieurs opérations métier doivent produire des traces. Ajouter le code technique de journalisation à chacune compliquerait leurs responsabilités.",
+        "decision": "Journal porte cette responsabilité technique. La commande fournit seulement le message de confirmation.",
+        "diagramDescription": "Commande → Journal (utilise)"
     },
     {
         "id": "grasp-indirection",
@@ -517,7 +634,10 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n#include <string>\n\nstruct ServiceMail {\n    void envoyer(const std::string& texte) const { std::cout << \"Mail : \" << texte << '\\n'; }\n};\n\nclass Notifications {\npublic:\n    explicit Notifications(const ServiceMail& mail) : mail_(mail) {}\n    void publier(const std::string& message) const { mail_.envoyer(message); }\n\nprivate:\n    const ServiceMail& mail_;\n};\n\nint main() {\n    ServiceMail mail;\n    Notifications notifications{mail};\n    notifications.publier(\"Bienvenue\");\n}\n",
         "output": "Mail : Bienvenue\n",
         "when": "Ajoutez un intermédiaire lorsqu’il absorbe une différence ou protège plusieurs appelants d’un changement.",
-        "compare": "Indirection décrit l’idée d’interposer un objet. Adapter, Facade et Mediator sont des façons différentes de le faire selon le problème."
+        "compare": "Indirection décrit l’idée d’interposer un objet. Adapter, Facade et Mediator sont des façons différentes de le faire selon le problème.",
+        "case": "Les composants métier publient des notifications. Un point de passage commun doit décider comment contacter le service de mail.",
+        "decision": "Notifications intervient entre le client et le service concret. La coordination peut évoluer dans cet intermédiaire.",
+        "diagramDescription": "Notifications → ServiceMail (délègue)"
     },
     {
         "id": "grasp-protected-variations",
@@ -530,6 +650,9 @@ window.CPP_LESSONS = [
         "code": "#include <iostream>\n\nstruct Horloge {\n    virtual ~Horloge() = default;\n    virtual int heure() const = 0;\n};\n\nstruct HorlogeFixe final : Horloge {\n    int heure() const override { return 9; }\n};\n\nbool ouvert(const Horloge& horloge) {\n    return horloge.heure() >= 8 && horloge.heure() < 18;\n}\n\nint main() {\n    HorlogeFixe horloge;\n    std::cout << std::boolalpha << ouvert(horloge) << '\\n';\n}\n",
         "output": "true\n",
         "when": "Protégez une variation déjà réelle ou très probable, comme le remplacement prévu d’une intégration.",
-        "compare": "Protected Variations désigne ce que vous cherchez à protéger. Low Coupling décrit un effet recherché : moins de classes à modifier lorsque cette partie change."
+        "compare": "Protected Variations désigne ce que vous cherchez à protéger. Low Coupling décrit un effet recherché : moins de classes à modifier lorsque cette partie change.",
+        "case": "Une règle d’ouverture dépend de l’heure. Les tests doivent pouvoir contrôler cette heure sans attendre un moment précis de la journée.",
+        "decision": "Le contrat Horloge protège la variation du temps fourni. HorlogeFixe rend le test reproductible.",
+        "diagramDescription": "HorlogeFixe → Horloge (inherit) ; ouvert() → Horloge (consulte)"
     }
 ];
