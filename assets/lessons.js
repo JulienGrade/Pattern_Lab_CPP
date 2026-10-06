@@ -479,5 +479,57 @@ window.CPP_LESSONS = [
         "output": "Total : 30\n",
         "when": "Rassemblez dans une classe les tâches qui servent un même objectif clairement nommé.",
         "compare": "High Cohesion garde les responsabilités d’une classe cohérentes. Low Coupling réduit la quantité de détails qu’elle connaît sur ses voisines."
+    },
+    {
+        "id": "grasp-polymorphism",
+        "name": "Polymorphism",
+        "family": "grasp",
+        "summary": "Confier aux types concernés les comportements qui varient, derrière un contrat commun.",
+        "situation": "Attribuer les variantes à leurs types",
+        "reading": "publier() utilise Document. Pdf connaît son format et implémente exporter().",
+        "limit": "La variation est portée par le type concret. L’appelant évite de tester le nom de chaque format.",
+        "code": "#include <iostream>\n#include <string>\n\nstruct Document {\n    virtual ~Document() = default;\n    virtual std::string exporter() const = 0;\n};\n\nstruct Pdf final : Document {\n    std::string exporter() const override { return \"PDF\"; }\n};\n\nvoid publier(const Document& document) {\n    std::cout << document.exporter() << '\\n';\n}\n\nint main() {\n    Pdf document;\n    publier(document);\n}\n",
+        "output": "PDF\n",
+        "when": "Utilisez plusieurs implémentations quand le comportement change réellement selon le type.",
+        "compare": "Polymorphism est le principe qui permet cet appel commun. Strategy organise concrètement le choix entre des comportements interchangeables."
+    },
+    {
+        "id": "grasp-pure-fabrication",
+        "name": "Pure Fabrication",
+        "family": "grasp",
+        "summary": "Créer une responsabilité logicielle cohérente sans imposer qu’elle corresponde à un objet du monde réel.",
+        "situation": "Introduire un service pour une responsabilité technique",
+        "reading": "Journal regroupe l’écriture des événements. Commande lui transmet la confirmation.",
+        "limit": "Le journal est un objet de conception ajouté pour isoler une tâche technique. Il pourrait ensuite changer de destination de sortie.",
+        "code": "#include <iostream>\n#include <string>\n\nstruct Journal {\n    void ecrire(const std::string& texte) const { std::cout << texte << '\\n'; }\n};\n\nclass Commande {\npublic:\n    void confirmer(const Journal& journal) {\n        confirmee_ = true;\n        journal.ecrire(\"Commande confirmee\");\n    }\n\nprivate:\n    bool confirmee_ = false;\n};\n\nint main() {\n    Commande commande;\n    Journal journal;\n    commande.confirmer(journal);\n}\n",
+        "output": "Commande confirmee\n",
+        "when": "Créez une classe de service quand cela protège un rôle métier et rend une tâche technique réutilisable.",
+        "compare": "Information Expert recherche un objet métier déjà bien placé. Pure Fabrication autorise un objet de conception supplémentaire quand aucun objet métier ne convient."
+    },
+    {
+        "id": "grasp-indirection",
+        "name": "Indirection",
+        "family": "grasp",
+        "summary": "Introduire un intermédiaire pour limiter une dépendance directe entre deux éléments.",
+        "situation": "Intercaler un point de passage",
+        "reading": "Notifications joue l’intermédiaire entre les clients et ServiceMail. Les clients publient un message dans le vocabulaire de l’application.",
+        "limit": "L’intermédiaire est utile si la coordination ou le fournisseur évolue. Il doit apporter une responsabilité identifiable.",
+        "code": "#include <iostream>\n#include <string>\n\nstruct ServiceMail {\n    void envoyer(const std::string& texte) const { std::cout << \"Mail : \" << texte << '\\n'; }\n};\n\nclass Notifications {\npublic:\n    explicit Notifications(const ServiceMail& mail) : mail_(mail) {}\n    void publier(const std::string& message) const { mail_.envoyer(message); }\n\nprivate:\n    const ServiceMail& mail_;\n};\n\nint main() {\n    ServiceMail mail;\n    Notifications notifications{mail};\n    notifications.publier(\"Bienvenue\");\n}\n",
+        "output": "Mail : Bienvenue\n",
+        "when": "Ajoutez un intermédiaire lorsqu’il absorbe une différence ou protège plusieurs appelants d’un changement.",
+        "compare": "Indirection décrit l’idée d’interposer un objet. Adapter, Facade et Mediator sont des façons différentes de le faire selon le problème."
+    },
+    {
+        "id": "grasp-protected-variations",
+        "name": "Protected Variations",
+        "family": "grasp",
+        "summary": "Placer un contrat stable autour d’un point de variation identifié.",
+        "situation": "Isoler une source de changement",
+        "reading": "ouvert() consulte le contrat Horloge. HorlogeFixe rend le résultat déterministe pour les tests.",
+        "limit": "Une horloge système pourrait implémenter le même contrat. L’interface protège ici la variation du temps fourni.",
+        "code": "#include <iostream>\n\nstruct Horloge {\n    virtual ~Horloge() = default;\n    virtual int heure() const = 0;\n};\n\nstruct HorlogeFixe final : Horloge {\n    int heure() const override { return 9; }\n};\n\nbool ouvert(const Horloge& horloge) {\n    return horloge.heure() >= 8 && horloge.heure() < 18;\n}\n\nint main() {\n    HorlogeFixe horloge;\n    std::cout << std::boolalpha << ouvert(horloge) << '\\n';\n}\n",
+        "output": "true\n",
+        "when": "Protégez une variation déjà réelle ou très probable, comme le remplacement prévu d’une intégration.",
+        "compare": "Protected Variations désigne ce que vous cherchez à protéger. Low Coupling décrit un effet recherché : moins de classes à modifier lorsque cette partie change."
     }
 ];
