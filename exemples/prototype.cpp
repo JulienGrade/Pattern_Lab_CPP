@@ -1,6 +1,6 @@
 #include <iostream>
-#include <string>
 #include <memory>
+#include <string>
 #include <utility>
 
 struct Document {
@@ -11,13 +11,16 @@ struct Document {
 
 class Note final : public Document {
 public:
-    explicit Note(std::string titre) : titre_(std::move(titre)) {}
+    explicit Note(std::string titre) : titre_(std::move(titre)) {
+    }
 
     std::unique_ptr<Document> cloner() const override {
         return std::make_unique<Note>(*this);
     }
 
-    std::string titre() const override { return titre_; }
+    std::string titre() const override {
+        return titre_;
+    }
 
 private:
     std::string titre_;
@@ -25,6 +28,7 @@ private:
 
 int main() {
     Note original{"Contrat"};
-    const auto copie = original.cloner();
+    const Document &prototype = original;
+    const auto copie = prototype.cloner();
     std::cout << copie->titre() << '\n';
 }

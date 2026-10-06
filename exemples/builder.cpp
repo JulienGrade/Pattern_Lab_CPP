@@ -4,29 +4,52 @@
 
 struct Rapport {
     std::string titre;
-    bool stock;
+    bool stock = false;
 };
-
-class RapportBuilder {
+// Builder : les étapes de construction communes.
+class ConstructeurRapport {
 public:
-    RapportBuilder& titre(std::string valeur) {
-        titre_ = std::move(valeur);
-        return *this;
+    virtual ~ConstructeurRapport() = default;
+    virtual void reinitialiser() = 0;
+    virtual void ajouterTitre(std::string titre) = 0;
+    virtual void ajouterStock() = 0;
+};
+class RapportBuilder final : public ConstructeurRapport {
+public:
+    void reinitialiser() override {
+        rapport_ = Rapport{};
     }
-
-    RapportBuilder& avecStock() {
-        stock_ = true;
-        return *this;
+    void ajouterTitre(std::string titre) override {
+        rapport_.titre = std::move(titre);
     }
-
-    Rapport construire() const { return {titre_, stock_}; }
+    void ajouterStock() override {
+        rapport_.stock = true;
+    }
+    Rapport resultat() const {
+        return rapport_;
+    }
 
 private:
-    std::string titre_ = "Rapport";
-    bool stock_ = false;
+    Rapport rapport_;
 };
+// Director : connaît une recette, pas le stockage du produit.
+class Directeur {
+public:
+    explicit Directeur(ConstructeurRapport &builder) : builder_(builder) {
+    }
+    void inventaire() {
+        builder_.reinitialiser();
+        builder_.ajouterTitre("Inventaire");
+        builder_.ajouterStock();
+    }
 
+private:
+    ConstructeurRapport &builder_;
+};
 int main() {
-    const auto rapport = RapportBuilder{}.titre("Inventaire").avecStock().construire();
+    RapportBuilder builder;
+    Directeur directeur{builder};
+    directeur.inventaire();
+    const Rapport rapport = builder.resultat();
     std::cout << rapport.titre << " : stock " << std::boolalpha << rapport.stock << '\n';
 }
